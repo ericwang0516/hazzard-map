@@ -2,7 +2,7 @@
 
 // 大學範圍線資料
 export const campusBounds = {
-  name: '國立台北科技大學',
+  name: 'NTUT',
   bounds: [
     [25.04198, 121.53670], // 西南角
     [25.04417, 121.53306]  // 東北角
@@ -164,25 +164,25 @@ export const hazardTypes = {
     name: 'Chemical Hazard',
     color: '#ff4444',
     icon: iconPaths.chemical.medium, // 預設使用中危險圖示
-    description: '化學品相關危險'
+    description: 'Chemical Hazard'
   },
   mechanical: {
     name: 'Mechanical Hazard',
     color: '#ff8800',
     icon: iconPaths.mechanical.medium, // 預設使用中危險圖示
-    description: '機械設備相關危險'
+    description: 'Mechanical Hazard'
   },
   electrical: {
     name: 'Electrical Hazard',
     color: '#ffcc00',
     icon: iconPaths.electrical.medium, // 預設使用中危險圖示
-    description: '電氣設備相關危險'
+    description: 'Electrical Hazard'
   },
   storage: {
     name: 'Storage Hazard',
     color: '#ff0066',
     icon: iconPaths.storage.medium, // 預設使用中危險圖示
-    description: '儲存物品相關危險'
+    description: 'Storage Hazard'
   }
 };
 
@@ -192,7 +192,7 @@ export const hazardLevels = {
     name: 'High Risk',
     color: '#dc3545',
     size: 20,
-    description: '需要立即注意的高危險區域',
+    description: 'High Risk Zone',
     displayText: 'HIGH',
     radarRadius: 50 // 雷達動畫範圍（公尺）
   },
@@ -200,7 +200,7 @@ export const hazardLevels = {
     name: 'Medium Risk',
     color: '#fd7e14',
     size: 16,
-    description: '需要定期檢查的中危險區域',
+    description: 'Medium Risk Zone',
     displayText: 'MEDIUM',
     radarRadius: 25 // 雷達動畫範圍（公尺）
   },
@@ -208,7 +208,7 @@ export const hazardLevels = {
     name: 'Low Risk',
     color: '#28a745',
     size: 12,
-    description: '需要一般注意的低危險區域',
+    description: 'Low Risk Zone',
     displayText: 'LOW',
     radarRadius: 20 // 雷達動畫範圍（公尺）
   }

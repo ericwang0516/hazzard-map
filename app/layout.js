@@ -3,7 +3,7 @@ import "./globals.css";
 import "leaflet/dist/leaflet.css";
 
 
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 
 const geistSans = Geist({
@@ -24,12 +24,12 @@ const notoSans = Noto_Sans({
 
 export const metadata = {
   title: "NTUT Hazzard Map",
-  description: "國立台北科技大學易爆防災地圖系統",
+  description: "NTUT Hazzard Map for chemical disaster and evacuation.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="zh-TW">
+    <html lang="en">
       <head>
       <SpeedInsights/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -48,4 +48,4 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-}
+};

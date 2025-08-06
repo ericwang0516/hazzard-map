@@ -57,7 +57,7 @@ export default function MapComponent({ hazards = [] }) {
             
               // 添加地圖圖層
               const tileLayer = L.default.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© CartoDB, © OpenStreetMap contributors',
+                attribution: '© NTUT-Hazzard Map built on OpenStreetMap',
                 subdomains: 'abcd',
                 maxZoom: mapConfig.maxZoom
               });
@@ -130,8 +130,8 @@ export default function MapComponent({ hazards = [] }) {
               
                 // 添加地圖圖層
                 const tileLayer = L.default.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                  attribution: '© CartoDB, © OpenStreetMap contributors',
-                  subdomains: 'abcd',
+                  attribution: '© NTUT-Hazzard Map built on OpenStreetMap',
+                  subdomains: 'ntut-map',
                   maxZoom: mapConfig.maxZoom
                 });
                 
