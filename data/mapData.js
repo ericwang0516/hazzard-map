@@ -1,11 +1,11 @@
-// 地圖資料庫 - 可手動加入和修改標示位置
+// Map Data
 
-// 大學範圍線資料
 export const campusBounds = {
   name: 'NTUT',
   bounds: [
-    [25.04198, 121.53670], // 西南角
-    [25.04417, 121.53306]  // 東北角
+    // Coordinates
+    [25.04198, 121.53670],
+    [25.04417, 121.53306]
   ],
   style: {
     color: '#0066cc',
@@ -15,7 +15,6 @@ export const campusBounds = {
   }
 };
 
-// 建築物標記資料
 export const buildings = [
   {
     id: 1,
@@ -108,40 +107,37 @@ export const hazardData = [
 // 圖片路徑配置
 export const iconPaths = {
   chemical: {
-    high: '/icons/chemical_high.png',    // 化學高危險圖示
-    medium: '/icons/chemical_med.png',   // 化學中危險圖示
-    low: '/icons/chemical_low.png'       // 化學低危險圖示
+    high: '/icons/chemical_high.png',    
+    medium: '/icons/chemical_med.png',   
+    low: '/icons/chemical_low.png'       
   },
   mechanical: {
-    high: '/icons/mechanical_high.png',  // 機械高危險圖示
-    medium: '/icons/mechanical_med.png', // 機械中危險圖示
-    low: '/icons/mechanical_low.png'     // 機械低危險圖示
+    high: '/icons/mechanical_high.png',  
+    medium: '/icons/mechanical_med.png', 
+    low: '/icons/mechanical_low.png'     
   },
   electrical: {
-    high: '/icons/electrical_high.png',  // 電氣高危險圖示
-    medium: '/icons/electrical_med.png', // 電氣中危險圖示
-    low: '/icons/electrical_low.png'     // 電氣低危險圖示
+    high: '/icons/electrical_high.png',  
+    medium: '/icons/electrical_med.png', 
+    low: '/icons/electrical_low.png'     
   },
   storage: {
-    high: '/icons/storage_high.png',     // 儲存高危險圖示
-    medium: '/icons/storage_med.png',    // 儲存中危險圖示
-    low: '/icons/storage_low.png'        // 儲存低危險圖示
+    high: '/icons/storage_high.png',     
+    medium: '/icons/storage_med.png',    
+    low: '/icons/storage_low.png'        
   }
 };
 
 // 根據危險類型和等級獲取圖示
 export const getHazardIcon = (type, level) => {
-  // 檢查是否有該類型的等級化圖示
   if (iconPaths[type] && typeof iconPaths[type] === 'object' && iconPaths[type][level]) {
     return iconPaths[type][level];
   }
   
-  // 如果沒有等級化圖示，使用預設圖示
   if (iconPaths[type] && typeof iconPaths[type] === 'string') {
     return iconPaths[type];
   }
   
-  // 如果都沒有，使用化學中危險作為預設圖示
   return iconPaths.chemical.medium;
 };
 
