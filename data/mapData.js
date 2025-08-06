@@ -19,34 +19,34 @@ export const campusBounds = {
 export const buildings = [
   {
     id: 1,
-    name: '綜合科館',
+    name: 'General Building',
     lat: 25.0427,
     lng: 121.5359,
-    description: '綜合科技研究大樓',
+    description: 'General Building',
     type: 'academic'
   },
   {
     id: 2,
-    name: '工程館',
+    name: 'Engineering Building',
     lat: 25.0438,  // 25.043840133750635, 121.53477032858697
     lng: 121.5347,
-    description: '工程學院大樓',
+    description: 'Engineering Building',
     type: 'academic'
   },
   {
     id: 3,
-    name: '設計館',
+    name: 'Design Building',
     lat: 25.042540, // 25.042540552842755, 121.53378760091171
     lng: 121.5337,
-    description: '設計學院大樓',
+    description: 'Design Building',
     type: 'academic'
   },
   {
     id: 4,
-    name: '化學工程館',
+    name: 'Chemical Engineering Building',
     lat: 25.0438, // 25.043823811978076, 121.53440325709717
     lng: 121.5344,
-    description: '化學工程館大樓',
+    description: 'Chemical Engineering Building',
     type: 'facility'
   },
 ];
@@ -55,78 +55,78 @@ export const buildings = [
 export const hazardData = [
   {
     id: 1,
-    name: '化學實驗室 A',
+    name: 'Chemical Lab A',
     type: 'chemical',
     level: 'high',
     lat: 25.0427,
     lng: 121.5359,
-    description: '化學實驗室，存放危險化學品',
-    building: '綜合科館'
+    description: 'Chemical Lab',
+    building: 'General Building'
   },
   {
     id: 2,
-    name: '機械工廠',
+    name: 'Mechanical Factory',
     type: 'mechanical',
     level: 'medium',
     lat: 25.0438,
     lng: 121.5347,
-    description: '機械加工工廠，有大型機械設備',
-    building: '工程館'
+    description: 'Mechanical Factory',
+    building: 'Engineering Building'
   },
   {
     id: 3,
-    name: '電氣設備室',
+    name: 'Electrical Equipment Room',
     type: 'electrical',
     level: 'low',
     lat: 25.042540,
     lng: 121.5337,
-    description: '電氣設備控制室',
-    building: '設計館'
+    description: 'Electrical Equipment Room',
+    building: 'Design Building'
   },
   {
     id: 4,
-    name: '儲存倉庫',
+    name: 'Storage Warehouse',
     type: 'storage',
     level: 'high',
     lat: 25.0438,
     lng: 121.5344,
-    description: '危險物品儲存倉庫',
-    building: '化學工程館'
+    description: 'Storage Warehouse',
+    building: 'Chemical Engineering Building'
   },
   {
     id: 5,
-    name: '實驗室 B',
+    name: 'Chemical Lab B',
     type: 'chemical',
     level: 'medium',
     lat: 25.0427,
     lng: 121.5359,
-    description: '生物化學實驗室',
-    building: '綜合科館'
+    description: 'Chemical Lab B',
+    building: 'General Building'
   }
 ];
 
 // 危險類型定義
 export const hazardTypes = {
   chemical: {
-    name: '化學危險',
+    name: 'Chemical Hazard',
     color: '#ff4444',
     icon: '🧪',
     description: '化學品相關危險'
   },
   mechanical: {
-    name: '機械危險',
+    name: 'Mechanical Hazard',
     color: '#ff8800',
     icon: '⚙️',
     description: '機械設備相關危險'
   },
   electrical: {
-    name: '電氣危險',
+    name: 'Electrical Hazard',
     color: '#ffcc00',
     icon: '⚡',
     description: '電氣設備相關危險'
   },
   storage: {
-    name: '儲存危險',
+    name: 'Storage Hazard',
     color: '#ff0066',
     icon: '📦',
     description: '儲存物品相關危險'
@@ -136,7 +136,7 @@ export const hazardTypes = {
 // 危險等級定義
 export const hazardLevels = {
   high: {
-    name: '高危險',
+    name: 'High Risk',
     color: '#dc3545',
     size: 20,
     description: '需要立即注意的高危險區域',
@@ -144,7 +144,7 @@ export const hazardLevels = {
     radarRadius: 50 // 雷達動畫範圍（公尺）
   },
   medium: {
-    name: '中危險',
+    name: 'Medium Risk',
     color: '#fd7e14',
     size: 16,
     description: '需要定期檢查的中危險區域',
@@ -152,7 +152,7 @@ export const hazardLevels = {
     radarRadius: 25 // 雷達動畫範圍（公尺）
   },
   low: {
-    name: '低危險',
+    name: 'Low Risk',
     color: '#28a745',
     size: 12,
     description: '需要一般注意的低危險區域',
@@ -164,15 +164,15 @@ export const hazardLevels = {
 // 圖例資料
 export const legendData = {
   hazardTypes: [
-    { key: 'chemical', name: '化學危險', color: '#ff4444', icon: '🧪' },
-    { key: 'mechanical', name: '機械危險', color: '#ff8800', icon: '⚙️' },
-    { key: 'electrical', name: '電氣危險', color: '#ffcc00', icon: '⚡' },
-    { key: 'storage', name: '儲存危險', color: '#ff0066', icon: '📦' }
+    { key: 'chemical', name: 'Chemical Hazard', color: '#ff4444', icon: '🧪' },
+    { key: 'mechanical', name: 'Mechanical Hazard', color: '#ff8800', icon: '⚙️' },
+    { key: 'electrical', name: 'Electrical Hazard', color: '#ffcc00', icon: '⚡' },
+    { key: 'storage', name: 'Storage Hazard', color: '#ff0066', icon: '📦' }
   ],
   hazardLevels: [
-    { key: 'high', name: '高危險', color: '#dc3545' },
-    { key: 'medium', name: '中危險', color: '#fd7e14' },
-    { key: 'low', name: '低危險', color: '#28a745' }
+    { key: 'high', name: 'High Risk', color: '#dc3545' },
+    { key: 'medium', name: 'Medium Risk', color: '#fd7e14' },
+    { key: 'low', name: 'Low Risk', color: '#28a745' }
   ]
 };
 

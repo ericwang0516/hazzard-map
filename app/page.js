@@ -39,13 +39,13 @@ export default function Home() {
         <div className={styles.sidebar}>
           {/* 危險類型篩選 */}
           <div className={styles.filterSection}>
-            <h3>危險類型篩選</h3>
+            <h3>Danger Type Filter</h3>
             <div className={styles.filterOptions}>
               <button 
                 className={`${styles.filterBtn} ${selectedHazard === 'all' ? styles.active : ''}`}
                 onClick={() => setSelectedHazard('all')}
               >
-                全部類型
+                All Types
               </button>
               {Object.entries(hazardTypes).map(([key, value]) => (
                 <button 
@@ -63,7 +63,7 @@ export default function Home() {
 
           {/* 危險區域列表 */}
           <div className={styles.hazardList}>
-            <h3>危險區域列表</h3>
+            <h3>Dangerous Zone List</h3>
             <div className={styles.hazardItems}>
               {filteredHazards.map(hazard => (
                 <div key={hazard.id} className={styles.hazardItem}>
@@ -87,7 +87,7 @@ export default function Home() {
 
           {/* 圖例 */}
           <div className={styles.legend}>
-            <h3>圖例</h3>
+            <h3>Legend</h3>
             <div className={styles.legendItems}>
               {legendData.hazardTypes.map((type) => (
                 <div key={type.key} className={styles.legendItem}>
