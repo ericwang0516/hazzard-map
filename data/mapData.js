@@ -105,30 +105,83 @@ export const hazardData = [
   }
 ];
 
+// 圖片路徑配置
+export const iconPaths = {
+  chemical: {
+    high: '/icons/chemical_high.png',    // 化學高危險圖示
+    medium: '/icons/chemical_med.png',   // 化學中危險圖示
+    low: '/icons/chemical_low.png'       // 化學低危險圖示
+  },
+  mechanical: {
+    high: '/icons/mechanical_high.png',  // 機械高危險圖示
+    medium: '/icons/mechanical_med.png', // 機械中危險圖示
+    low: '/icons/mechanical_low.png'     // 機械低危險圖示
+  },
+  electrical: {
+    high: '/icons/electrical_high.png',  // 電氣高危險圖示
+    medium: '/icons/electrical_med.png', // 電氣中危險圖示
+    low: '/icons/electrical_low.png'     // 電氣低危險圖示
+  },
+  storage: {
+    high: '/icons/storage_high.png',     // 儲存高危險圖示
+    medium: '/icons/storage_med.png',    // 儲存中危險圖示
+    low: '/icons/storage_low.png'        // 儲存低危險圖示
+  }
+};
+
+// 根據危險類型和等級獲取圖示
+export const getHazardIcon = (type, level) => {
+  // 檢查是否有該類型的等級化圖示
+  if (iconPaths[type] && typeof iconPaths[type] === 'object' && iconPaths[type][level]) {
+    return iconPaths[type][level];
+  }
+  
+  // 如果沒有等級化圖示，使用預設圖示
+  if (iconPaths[type] && typeof iconPaths[type] === 'string') {
+    return iconPaths[type];
+  }
+  
+  // 如果都沒有，使用化學中危險作為預設圖示
+  return iconPaths.chemical.medium;
+};
+
+// 檢查某個危險類型是否有等級化圖示
+export const hasLeveledIcons = (type) => {
+  return iconPaths[type] && typeof iconPaths[type] === 'object';
+};
+
+// 獲取某個危險類型的所有等級圖示
+export const getTypeIcons = (type) => {
+  if (hasLeveledIcons(type)) {
+    return iconPaths[type];
+  }
+  return null;
+};
+
 // 危險類型定義
 export const hazardTypes = {
   chemical: {
     name: 'Chemical Hazard',
     color: '#ff4444',
-    icon: '🧪',
+    icon: iconPaths.chemical.medium, // 預設使用中危險圖示
     description: '化學品相關危險'
   },
   mechanical: {
     name: 'Mechanical Hazard',
     color: '#ff8800',
-    icon: '⚙️',
+    icon: iconPaths.mechanical.medium, // 預設使用中危險圖示
     description: '機械設備相關危險'
   },
   electrical: {
     name: 'Electrical Hazard',
     color: '#ffcc00',
-    icon: '⚡',
+    icon: iconPaths.electrical.medium, // 預設使用中危險圖示
     description: '電氣設備相關危險'
   },
   storage: {
     name: 'Storage Hazard',
     color: '#ff0066',
-    icon: '📦',
+    icon: iconPaths.storage.medium, // 預設使用中危險圖示
     description: '儲存物品相關危險'
   }
 };
@@ -140,7 +193,7 @@ export const hazardLevels = {
     color: '#dc3545',
     size: 20,
     description: '需要立即注意的高危險區域',
-    displayText: '高',
+    displayText: 'HIGH',
     radarRadius: 50 // 雷達動畫範圍（公尺）
   },
   medium: {
@@ -148,7 +201,7 @@ export const hazardLevels = {
     color: '#fd7e14',
     size: 16,
     description: '需要定期檢查的中危險區域',
-    displayText: '中',
+    displayText: 'MEDIUM',
     radarRadius: 25 // 雷達動畫範圍（公尺）
   },
   low: {
@@ -156,7 +209,7 @@ export const hazardLevels = {
     color: '#28a745',
     size: 12,
     description: '需要一般注意的低危險區域',
-    displayText: '低',
+    displayText: 'LOW',
     radarRadius: 20 // 雷達動畫範圍（公尺）
   }
 };
@@ -164,10 +217,10 @@ export const hazardLevels = {
 // 圖例資料
 export const legendData = {
   hazardTypes: [
-    { key: 'chemical', name: 'Chemical Hazard', color: '#ff4444', icon: '🧪' },
-    { key: 'mechanical', name: 'Mechanical Hazard', color: '#ff8800', icon: '⚙️' },
-    { key: 'electrical', name: 'Electrical Hazard', color: '#ffcc00', icon: '⚡' },
-    { key: 'storage', name: 'Storage Hazard', color: '#ff0066', icon: '📦' }
+    { key: 'chemical', name: 'Chemical Hazard', color: '#ff4444', icon: iconPaths.chemical.medium },
+    { key: 'mechanical', name: 'Mechanical Hazard', color: '#ff8800', icon: iconPaths.mechanical.medium },
+    { key: 'electrical', name: 'Electrical Hazard', color: '#ffcc00', icon: iconPaths.electrical.medium },
+    { key: 'storage', name: 'Storage Hazard', color: '#ff0066', icon: iconPaths.storage.medium }
   ],
   hazardLevels: [
     { key: 'high', name: 'High Risk', color: '#dc3545' },

@@ -181,7 +181,24 @@
 }
 
 .hazardIcon {
-  font-size: 1.2rem;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.leveledIcons {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.leveledIcons .hazardIcon {
+  width: 16px;
+  height: 16px;
 }
 
 /* 危險區域列表 */

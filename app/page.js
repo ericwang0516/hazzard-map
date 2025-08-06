@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import styles from './page.module.css';
-import { hazardData, hazardTypes, hazardLevels, legendData } from '../data/mapData';
+import { hazardData, hazardTypes, hazardLevels, legendData, getHazardIcon, hasLeveledIcons, getTypeIcons } from '../data/mapData';
 
 // 動態導入地圖組件以避免 SSR 問題
 const MapComponent = dynamic(() => import('../components/MapComponent'), {
@@ -54,7 +54,10 @@ export default function Home() {
                   onClick={() => setSelectedHazard(key)}
                   style={{ borderLeftColor: value.color }}
                 >
-                  <span className={styles.hazardIcon}>{value.icon}</span>
+                  <span 
+                    className={styles.hazardIcon}
+                    style={{ backgroundImage: `url(${value.icon})` }}
+                  ></span>
                   {value.name}
                 </button>
               ))}
@@ -68,9 +71,10 @@ export default function Home() {
               {filteredHazards.map(hazard => (
                 <div key={hazard.id} className={styles.hazardItem}>
                   <div className={styles.hazardInfo}>
-                    <span className={styles.hazardIcon}>
-                      {hazardTypes[hazard.type].icon}
-                    </span>
+                    <span 
+                      className={styles.hazardIcon}
+                      style={{ backgroundImage: `url(${getHazardIcon(hazard.type, hazard.level)})` }}
+                    ></span>
                     <div>
                       <h4>{hazard.name}</h4>
                       <p className={styles.hazardType}>{hazardTypes[hazard.type].name}</p>
@@ -89,12 +93,35 @@ export default function Home() {
           <div className={styles.legend}>
             <h3>Legend</h3>
             <div className={styles.legendItems}>
+              {/* 動態顯示所有危險類型 */}
               {legendData.hazardTypes.map((type) => (
                 <div key={type.key} className={styles.legendItem}>
-                  <div 
-                    className={styles.legendColor} 
-                    style={{ backgroundColor: type.color }}
-                  ></div>
+                  {hasLeveledIcons(type.key) ? (
+                    // 如果有等級化圖示，顯示所有等級
+                    <div className={styles.leveledIcons}>
+                      <span 
+                        className={styles.hazardIcon}
+                        style={{ backgroundImage: `url(${getHazardIcon(type.key, 'high')})` }}
+                        title={`High Risk ${type.name}`}
+                      ></span>
+                      <span 
+                        className={styles.hazardIcon}
+                        style={{ backgroundImage: `url(${getHazardIcon(type.key, 'medium')})` }}
+                        title={`Medium Risk ${type.name}`}
+                      ></span>
+                      <span 
+                        className={styles.hazardIcon}
+                        style={{ backgroundImage: `url(${getHazardIcon(type.key, 'low')})` }}
+                        title={`Low Risk ${type.name}`}
+                      ></span>
+                    </div>
+                  ) : (
+                    // 如果沒有等級化圖示，顯示單一圖示
+                    <span 
+                      className={styles.hazardIcon}
+                      style={{ backgroundImage: `url(${type.icon})` }}
+                    ></span>
+                  )}
                   <span>{type.name}</span>
                 </div>
               ))}
