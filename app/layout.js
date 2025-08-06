@@ -2,6 +2,10 @@ import { Geist, Geist_Mono, Noto_Sans } from "next/font/google";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 
+
+import { SpeedInsights } from "@vercel/speed-insights/next"
+
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,6 +31,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="zh-TW">
       <head>
+      <SpeedInsights/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
