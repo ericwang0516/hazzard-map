@@ -32,7 +32,7 @@ export default function MapComponent({ hazards = [] }) {
 
         if (!mapRef.current || mapInstanceRef.current) return;
 
-        console.log('初始化地圖...');
+        console.log('Initializing Map...');
         console.log('地圖容器尺寸:', mapRef.current.offsetWidth, 'x', mapRef.current.offsetHeight);
         
         // 等待容器有正確的尺寸

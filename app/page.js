@@ -5,16 +5,14 @@ import dynamic from 'next/dynamic';
 import styles from './page.module.css';
 import { hazardData, hazardTypes, hazardLevels, legendData, getHazardIcon, hasLeveledIcons, getTypeIcons } from '../data/mapData';
 
-// 動態導入地圖組件以避免 SSR 問題
 const MapComponent = dynamic(() => import('../components/MapComponent'), {
   ssr: false,
-  loading: () => <div className={styles.mapLoading}>載入地圖中...</div>
+  loading: () => <div className={styles.mapLoading}>Loading Map...</div>
 });
 
 export default function Home() {
   const [selectedHazard, setSelectedHazard] = useState('all');
 
-  // 使用資料庫中的危險區域資料
   const filteredHazards = selectedHazard === 'all' 
     ? hazardData 
     : hazardData.filter(hazard => hazard.type === selectedHazard);
@@ -142,4 +140,4 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
