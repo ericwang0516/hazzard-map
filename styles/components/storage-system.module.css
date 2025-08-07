@@ -1,0 +1,311 @@
+/* 全域容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+  color: #333;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 標題列 */
+.header {
+  background: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+/* 主要內容區域 */
+.mainContent {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 2rem;
+  gap: 2.5rem;
+  min-height: calc(100vh - 60px);
+}
+
+/* 左側邊欄 */
+.sidebar {
+  width: 200px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  flex-shrink: 0;
+}
+
+.sidebarTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #333;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.categoryButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.categoryButton:hover {
+  background-color: #f8f9fa;
+}
+
+.categoryButton.active {
+  background: #007bff;
+  color: #ffffff;
+  border-color: #007bff;
+}
+
+.categoryButton.active:hover {
+  background: #0056b3;
+}
+
+.categoryIcon {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+}
+
+.categoryName {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* 右側內容區域 */
+.content {
+  flex: 1 1 0%;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: none;
+  min-width: 0;
+}
+
+.contentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.contentTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.itemCount {
+  font-size: 0.9rem;
+  color: #6c757d;
+  background: #f8f9fa;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+}
+
+/* 存放項目列表 */
+.storageList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.storageItem {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  transition: border-color 0.2s ease;
+}
+
+.storageItem:hover {
+  border-color: #dee2e6;
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.itemName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.riskBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.itemDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detailLabel {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.detailValue {
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 空狀態 */
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* 載入狀態 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+/* 響應式設計 */
+@media (max-width: 1024px) {
+  .mainContent {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+  .sidebar {
+    width: 160px;
+    padding: 1.25rem;
+  }
+  .content {
+    padding: 1.2rem 1.2rem;
+  }
+  .storageItem {
+    padding: 1.2rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+    max-width: 100%;
+  }
+  .sidebar {
+    width: 100%;
+    order: 2;
+  }
+  .content {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  .storageItem {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContent {
+    padding: 0.75rem;
+  }
+  
+  .sidebar,
+  .content {
+    padding: 1rem;
+  }
+  
+  .storageItem {
+    padding: 1rem;
+  }
+  
+  .itemHeader {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+} 

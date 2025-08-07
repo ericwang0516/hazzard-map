@@ -7,6 +7,7 @@ import { legendData, hasLeveledIcons, getHazardIcon } from '../data/mapData';
 import { useTranslation } from '../contexts/LanguageContext';
 import { useMapState } from '../hooks/useMapState';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import Navigation from '../components/Navigation';
 import HazardFilter from '../components/HazardFilter';
 import HazardList from '../components/HazardList';
 
@@ -122,12 +123,15 @@ export default function Home() {
   return (
     <div className={styles.container}>
       {/* 標題列 */}
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <h1 className={styles.title}>{t('header.title')}</h1>
-          <LanguageSwitcher />
-        </div>
-      </header>
+              <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <h1 className={styles.title}>{t('header.title')}</h1>
+            <div className={styles.headerRight}>
+              <Navigation />
+              <LanguageSwitcher />
+            </div>
+          </div>
+        </header>
 
       {/* 主要內容區域 */}
       <div className={styles.mainContent}>

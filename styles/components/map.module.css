@@ -162,12 +162,8 @@
   border: 1px solid var(--border) !important;
 }
 
+/* 讓 leaflet popup 內容 padding 為 0，讓 hazard-popup 內容與外框完全對齊 */
 .mapContainer :global(.leaflet-popup-content) {
-  color: var(--text-primary) !important;
-  font-family: var(--font-noto-sans), sans-serif !important;
-  font-size: 0.9rem !important;
-  line-height: 1.5 !important;
-  margin: 0 !important;
   padding: 0 !important;
 }
 
@@ -197,12 +193,7 @@
 }
 
 .mapContainer :global(.leaflet-popup-close-button) {
-  color: var(--text-secondary) !important;
-  font-size: 1.2rem !important;
-  font-weight: 700 !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-  transition: color 0.2s ease, background-color 0.2s ease !important;
+  display: none !important;
 }
 
 .mapContainer :global(.leaflet-popup-close-button:hover) {
@@ -350,5 +341,19 @@
   .mapContainer :global(.leaflet-popup-content p) {
     font-size: 0.8rem !important;
     margin: 3px 0 !important;
+  }
+
+  /* 手機版：彈出卡片內的按鈕區塊，避免溢出與擠壓 */
+  .mapContainer :global(.hazard-popup .hazard-actions) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .mapContainer :global(.hazard-popup .hazard-actions > button) {
+    flex: 1 1 calc(50% - 8px) !important; /* 兩欄排版，必要時自動換行 */
+    min-width: 120px !important;
   }
 } 

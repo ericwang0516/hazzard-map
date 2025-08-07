@@ -30,9 +30,56 @@
     "medium": "中風險", 
     "low": "低風險"
   },
+  "storage": {
+    "categoryTitle": "存放類別",
+    "contentTitle": "存放資料",
+    "itemCount": "共 {count} 項物品",
+    "building": "大樓",
+    "room": "教室/位置",
+    "quantity": "數量",
+    "noData": "此類別暫無存放資料"
+  },
   "language": {
     "zh-TW": "繁體中文",
     "en": "English",
     "ja": "日本語"
+  },
+  "pages": {
+    "storage": {
+      "title": "危險物品存放系統"
+    }
+  },
+  "navigation": {
+    "toStorage": "前往平台",
+    "toMap": "返回地圖"
+  },
+  "items": {
+    "sulfuric_acid": "硫酸",
+    "hydrochloric_acid": "鹽酸",
+    "sodium_hydroxide": "氫氧化鈉",
+    "ethanol": "乙醇",
+    "high_voltage_power": "高壓電源",
+    "transformer": "變壓器",
+    "circuit_board": "電路板",
+    "cutting_machine": "切割機",
+    "drill_press": "鑽床",
+    "hand_tool_set": "手工具組",
+    "chemical_storage_cabinet": "化學品儲存櫃",
+    "equipment_storage_area": "設備儲存區",
+    "tool_storage_cabinet": "工具儲存櫃"
+  },
+  "units": {
+    "ml": "ml",
+    "l": "L",
+    "g": "g",
+    "unit": "台",
+    "piece": "片",
+    "set": "組",
+    "piece_count": "個",
+    "area": "區"
+  },
+  "popup": {
+    "route": "路線",
+    "close": "關閉"
   }
 } 

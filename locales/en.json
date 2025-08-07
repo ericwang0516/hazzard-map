@@ -30,9 +30,56 @@
     "medium": "Medium Risk",
     "low": "Low Risk"
   },
+  "storage": {
+    "categoryTitle": "Category",
+    "contentTitle": "Storage Data",
+    "itemCount": "Total {count} items",
+    "building": "Building",
+    "room": "Room/Location",
+    "quantity": "Quantity",
+    "noData": "No storage data for this category"
+  },
   "language": {
     "zh-TW": "繁體中文",
     "en": "English",
     "ja": "日本語"
+  },
+  "pages": {
+    "storage": {
+      "title": "Hazardous Material Storage System"
+    }
+  },
+  "navigation": {
+    "toStorage": "Go to Platform",
+    "toMap": "Back to Map"
+  },
+  "items": {
+    "sulfuric_acid": "Sulfuric Acid",
+    "hydrochloric_acid": "Hydrochloric Acid",
+    "sodium_hydroxide": "Sodium Hydroxide",
+    "ethanol": "Ethanol",
+    "high_voltage_power": "High Voltage Power Supply",
+    "transformer": "Transformer",
+    "circuit_board": "Circuit Board",
+    "cutting_machine": "Cutting Machine",
+    "drill_press": "Drill Press",
+    "hand_tool_set": "Hand Tool Set",
+    "chemical_storage_cabinet": "Chemical Storage Cabinet",
+    "equipment_storage_area": "Equipment Storage Area",
+    "tool_storage_cabinet": "Tool Storage Cabinet"
+  },
+  "units": {
+    "ml": "ml",
+    "l": "L",
+    "g": "g",
+    "unit": "unit",
+    "piece": "piece",
+    "set": "set",
+    "piece_count": "piece",
+    "area": "area"
+  },
+  "popup": {
+    "route": "Route",
+    "close": "Close"
   }
 } 

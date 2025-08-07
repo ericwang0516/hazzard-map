@@ -11,17 +11,14 @@
 
 /* 標題列 */
 .header {
-  background: rgb(247, 247, 247);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: #ffffff;
+  border-bottom: 1px solid #e9ecef;
   position: sticky;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
   top: 0;
   z-index: 1000;
-  flex-shrink: 0;
   height: 60px;
+  display: flex;
+  align-items: center;
 }
 
 .headerContent {
@@ -34,15 +31,17 @@
   width: 100%;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .title {
-  font-family: var(--font-noto-sans), sans-serif;
   font-size: 1.4rem;
   font-weight: 600;
   margin: 0;
-  letter-spacing: -0.05em;
-  color: #000000;
-  position: relative;
-  user-select: none;
+  color: #333;
 }
 
 /* 主要內容區域 */
@@ -131,14 +130,18 @@
     padding: 0 1rem;
     margin: 0;
   }
+  
+  .headerRight {
+    gap: 0.5rem;
+  }
+  
   .header{
     height: 70px;
   }
   
   .title {
     font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: 600;
   }
   
   /* 確保側邊欄在手機版不會超出螢幕 */

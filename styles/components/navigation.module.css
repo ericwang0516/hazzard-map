@@ -1,0 +1,72 @@
+.navigation {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navLink {
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #6c757d;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navLink:hover {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.navLink.active {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.navLink.active:hover {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+.navButton {
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  background: #007bff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  outline: none;
+  box-shadow: none;
+  letter-spacing: 0.5px;
+}
+
+.navButton:hover {
+  background: #3390ff;
+  color: #fff;
+}
+
+.navButton:active {
+  background: #0056b3;
+  color: #fff;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .navigation {
+    gap: 0.5rem;
+  }
+  
+  .navLink {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .navButton {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+} 

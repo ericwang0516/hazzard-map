@@ -30,9 +30,56 @@
     "medium": "警戒",
     "low": "注意"
   },
+  "storage": {
+    "categoryTitle": "保管カテゴリ",
+    "contentTitle": "保管データ",
+    "itemCount": "合計{count}件",
+    "building": "建物",
+    "room": "教室/場所",
+    "quantity": "数量",
+    "noData": "このカテゴリには保管データがありません"
+  },
   "language": {
     "zh-TW": "繁體中文",
     "en": "English",
     "ja": "日本語"
+  },
+  "pages": {
+    "storage": {
+      "title": "危険物保管システム"
+    }
+  },
+  "navigation": {
+    "toStorage": "プラットフォームへ",
+    "toMap": "地図に戻る"
+  },
+  "items": {
+    "sulfuric_acid": "硫酸",
+    "hydrochloric_acid": "塩酸",
+    "sodium_hydroxide": "水酸化ナトリウム",
+    "ethanol": "エタノール",
+    "high_voltage_power": "高電圧電源",
+    "transformer": "変圧器",
+    "circuit_board": "回路基板",
+    "cutting_machine": "切断機",
+    "drill_press": "ドリルプレス",
+    "hand_tool_set": "手工具セット",
+    "chemical_storage_cabinet": "化学薬品保管棚",
+    "equipment_storage_area": "設備保管エリア",
+    "tool_storage_cabinet": "工具保管棚"
+  },
+  "units": {
+    "ml": "ml",
+    "l": "L",
+    "g": "g",
+    "unit": "台",
+    "piece": "枚",
+    "set": "セット",
+    "piece_count": "個",
+    "area": "エリア"
+  },
+  "popup": {
+    "route": "ルート",
+    "close": "閉じる"
   }
 }
