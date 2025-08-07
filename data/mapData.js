@@ -1,11 +1,18 @@
 // Map Data
 
+// Campus Border - 不規則多邊形邊界
 export const campusBounds = {
-  name: 'NTUT',
-  bounds: [
-    // Coordinates
-    [25.04198, 121.53670],
-    [25.04417, 121.53306]
+  name: 'NTUT Campus',
+  coordinates: [
+    [25.044223948760656, 121.53305473189329], 
+    [25.04421239190933, 121.53364255696714], 
+    [25.044432768248747, 121.53402403595993], 
+    [25.044066456681207, 121.53479774584649], 
+    [25.043976009208126, 121.53535182197972], 
+    [25.043691099244462, 121.53627029049017], 
+    [25.041931878605887, 121.53662469954945], 
+    [25.04246130375998, 121.53309526389347], 
+    [25.043308549266193, 121.53305460482366]
   ],
   style: {
     color: '#0066cc',
@@ -15,6 +22,7 @@ export const campusBounds = {
   }
 };
 
+// Buildings
 export const buildings = [
   {
     id: 1,
@@ -50,15 +58,15 @@ export const buildings = [
   },
 ];
 
-// 危險區域資料
+// Zone data
 export const hazardData = [
   {
     id: 1,
     name: 'Chemical Lab A',
     type: 'chemical',
     level: 'high',
-    lat: 25.0427,
-    lng: 121.5359,
+    lat: 25.04283,
+    lng: 121.53594,
     description: 'Chemical Lab',
     building: 'General Building'
   },
@@ -104,7 +112,8 @@ export const hazardData = [
   }
 ];
 
-// 圖片路徑配置
+// Image Paths
+// Need to be added to public folder
 export const iconPaths = {
   chemical: {
     high: '/icons/chemical_high.png',    
@@ -128,25 +137,24 @@ export const iconPaths = {
   }
 };
 
-// 根據危險類型和等級獲取圖示
+// Get Hazard Icon
 export const getHazardIcon = (type, level) => {
   if (iconPaths[type] && typeof iconPaths[type] === 'object' && iconPaths[type][level]) {
     return iconPaths[type][level];
-  }
+  };
   
   if (iconPaths[type] && typeof iconPaths[type] === 'string') {
     return iconPaths[type];
-  }
+  };
   
   return iconPaths.chemical.medium;
 };
 
-// 檢查某個危險類型是否有等級化圖示
 export const hasLeveledIcons = (type) => {
   return iconPaths[type] && typeof iconPaths[type] === 'object';
 };
 
-// 獲取某個危險類型的所有等級圖示
+// Get Type Icons
 export const getTypeIcons = (type) => {
   if (hasLeveledIcons(type)) {
     return iconPaths[type];

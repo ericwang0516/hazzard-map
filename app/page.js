@@ -76,7 +76,7 @@ export default function Home() {
                     <div>
                       <h4>{hazard.name}</h4>
                       <p className={styles.hazardType}>{hazardTypes[hazard.type].name}</p>
-                      <p className={styles.hazardBuilding}>{hazard.building || '未指定建築'}</p>
+                      <p className={styles.hazardBuilding}>{hazard.building || 'No building specified'}</p>
                     </div>
                   </div>
                   <div className={`${styles.hazardLevel} ${styles[hazard.level]}`}>
@@ -100,17 +100,17 @@ export default function Home() {
                       <span 
                         className={styles.hazardIcon}
                         style={{ backgroundImage: `url(${getHazardIcon(type.key, 'high')})` }}
-                        title={`High Risk ${type.name}`}
+                        title={`- High Risk ${type.name}`}
                       ></span>
                       <span 
                         className={styles.hazardIcon}
                         style={{ backgroundImage: `url(${getHazardIcon(type.key, 'medium')})` }}
-                        title={`Medium Risk ${type.name}`}
+                        title={`- Medium Risk ${type.name}`}
                       ></span>
                       <span 
                         className={styles.hazardIcon}
                         style={{ backgroundImage: `url(${getHazardIcon(type.key, 'low')})` }}
-                        title={`Low Risk ${type.name}`}
+                        title={`- Low Risk ${type.name}`}
                       ></span>
                     </div>
                   ) : (

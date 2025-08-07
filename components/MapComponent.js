@@ -21,8 +21,8 @@ export default function MapComponent({ hazards = [] }) {
     const loadMap = async () => {
       try {
         const L = await import('leaflet');
+        console.log('imported leaflet');
         
-        // 修復 Leaflet 圖示問題
         delete L.default.Icon.Default.prototype._getIconUrl;
         L.default.Icon.Default.mergeOptions({
           iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -33,11 +33,10 @@ export default function MapComponent({ hazards = [] }) {
         if (!mapRef.current || mapInstanceRef.current) return;
 
         console.log('Initializing Map...');
-        console.log('地圖容器尺寸:', mapRef.current.offsetWidth, 'x', mapRef.current.offsetHeight);
+        console.log('Map container size:', mapRef.current.offsetWidth, 'x', mapRef.current.offsetHeight);
         
-        // 等待容器有正確的尺寸
         let retryCount = 0;
-        const maxRetries = 50; // 最多等待5秒
+        const maxRetries = 50;
         
         const waitForContainer = () => {
           if (mapRef.current.offsetWidth > 0 && mapRef.current.offsetHeight > 0) {
@@ -49,30 +48,31 @@ export default function MapComponent({ hazards = [] }) {
               const map = L.default.map(mapRef.current).setView(mapConfig.center, mapConfig.zoom);
               
               if (!map) {
-                throw new Error('地圖初始化失敗');
+                throw new Error('Map initialization failed.');
               }
               
               mapInstanceRef.current = map;
-              console.log('地圖對象創建成功:', map);
+              console.log('Map object created successfully:', map);
             
               // 添加地圖圖層
               const tileLayer = L.default.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© NTUT-Hazzard Map built on OpenStreetMap',
-                subdomains: 'abcd',
+                attribution: '© NTUT-Hazzard Map',
+                subdomains: 'ntut-map',
                 maxZoom: mapConfig.maxZoom
               });
               
               if (tileLayer) {
                 tileLayer.addTo(map);
-                console.log('地圖圖層添加成功');
+                console.log('Map layer added successfully.');
               }
 
-              // 使用資料庫中的校園邊界
-              const rectangle = L.default.rectangle(campusBounds.bounds, campusBounds.style);
+              // 使用資料庫中的校園邊界形狀
+              const campusPolygon = L.default.polygon(campusBounds.coordinates, campusBounds.style);
               
-              if (rectangle) {
-                rectangle.addTo(map).bindPopup(campusBounds.name);
-                console.log('校園邊界添加成功');
+              if (campusPolygon) {
+                campusPolygon._campusBoundary = true; // 標記為校園邊界
+                campusPolygon.addTo(map).bindPopup(campusBounds.name);
+                console.log(`Campus boundary added successfully.`);
               }
 
               // 使用資料庫中的建築物標記
@@ -83,27 +83,27 @@ export default function MapComponent({ hazards = [] }) {
                     <div style="text-align: center;">
                       <h4 style="margin: 0 0 8px 0; color: #333;">${building.name}</h4>
                       <p style="margin: 4px 0; color: #666;">${building.description}</p>
-                      <p style="margin: 4px 0; color: #888; font-size: 0.9rem;">類型: ${building.type === 'academic' ? '學術建築' : '設施建築'}</p>
+                      <p style="margin: 4px 0; color: #888; font-size: 0.9rem;">Type: ${building.type === 'academic' ? 'Academic Building' : 'Facility Building'}</p>
                     </div>
                   `;
                   marker.addTo(map).bindPopup(popupContent);
-                  console.log(`建築物標記 ${index + 1} 添加成功:`, building.name);
+                  console.log(`Building marker ${index + 1} added successfully:`, building.name);
                 }
               });
 
               setMapLoaded(true);
-              console.log('地圖初始化完成');
+              console.log('Map initialization completed.');
               
               // 強制重新計算地圖大小
               setTimeout(() => {
                 if (map && map.invalidateSize) {
                   map.invalidateSize();
-                  console.log('地圖大小已重新計算');
+                  console.log('Map size has been recalculated.');
                 }
               }, 100);
               
             } catch (mapError) {
-              console.error('地圖初始化錯誤:', mapError);
+              console.error('Map initialization error:', mapError);
               setError(mapError.message);
             }
             
@@ -140,12 +140,13 @@ export default function MapComponent({ hazards = [] }) {
                   console.log('強制初始化地圖圖層添加成功');
                 }
 
-                // 使用資料庫中的校園邊界
-                const rectangle = L.default.rectangle(campusBounds.bounds, campusBounds.style);
+                // 使用資料庫中的校園邊界形狀
+                const campusPolygon = L.default.polygon(campusBounds.coordinates, campusBounds.style);
                 
-                if (rectangle) {
-                  rectangle.addTo(map).bindPopup(campusBounds.name);
-                  console.log('強制初始化校園邊界添加成功');
+                if (campusPolygon) {
+                  campusPolygon._campusBoundary = true; // 標記為校園邊界
+                  campusPolygon.addTo(map).bindPopup(campusBounds.name);
+                  console.log(`強制初始化校園邊界添加成功`);
                 }
 
                 // 使用資料庫中的建築物標記
@@ -156,7 +157,7 @@ export default function MapComponent({ hazards = [] }) {
                       <div style="text-align: center;">
                         <h4 style="margin: 0 0 8px 0; color: #333;">${building.name}</h4>
                         <p style="margin: 4px 0; color: #666;">${building.description}</p>
-                        <p style="margin: 4px 0; color: #888; font-size: 0.9rem;">類型: ${building.type === 'academic' ? '學術建築' : '設施建築'}</p>
+                        <p style="margin: 4px 0; color: #888; font-size: 0.9rem;">Type: ${building.type === 'academic' ? 'Academic Building' : 'Facility Building'}</p>
                       </div>
                     `;
                     marker.addTo(map).bindPopup(popupContent);
@@ -165,18 +166,18 @@ export default function MapComponent({ hazards = [] }) {
                 });
 
                 setMapLoaded(true);
-                console.log('地圖強制初始化完成');
+                console.log('Map forced initialization completed');
                 
                 // 強制重新計算地圖大小
                 setTimeout(() => {
                   if (map && map.invalidateSize) {
                     map.invalidateSize();
-                    console.log('地圖大小已重新計算');
+                    console.log('Map size has been recalculated');
                   }
                 }, 100);
                 
               } catch (forceMapError) {
-                console.error('強制初始化地圖錯誤:', forceMapError);
+                console.error('Error in forced initialization of map:', forceMapError);
                 setError(forceMapError.message);
               }
             } else {
@@ -188,7 +189,7 @@ export default function MapComponent({ hazards = [] }) {
         waitForContainer();
 
       } catch (err) {
-        console.error('地圖載入錯誤:', err);
+        console.error('Map loading error:', err);
         setError(err.message);
       }
     };
@@ -201,7 +202,7 @@ export default function MapComponent({ hazards = [] }) {
         mapInstanceRef.current = null;
       }
     };
-  }, []);
+  }, []); // 初始化地圖
 
   // 監聽視窗大小變化
   useEffect(() => {
@@ -210,7 +211,7 @@ export default function MapComponent({ hazards = [] }) {
         setTimeout(() => {
           if (mapInstanceRef.current && mapInstanceRef.current.invalidateSize) {
             mapInstanceRef.current.invalidateSize();
-            console.log('視窗大小變化，地圖已更新');
+            console.log('Window size changed, map has been updated.');
           }
         }, 100);
       }
@@ -230,7 +231,7 @@ export default function MapComponent({ hazards = [] }) {
         
         // 檢查地圖實例是否有效
         if (!mapInstanceRef.current || !mapInstanceRef.current.eachLayer) {
-          console.log('地圖實例無效，跳過更新危險區域');
+          console.log('Map instance is invalid, skipping hazard update.');
           return;
         }
         
@@ -317,11 +318,11 @@ export default function MapComponent({ hazards = [] }) {
           const popupContent = `
             <div style="text-align: center;">
               <h4 style="margin: 0 0 8px 0; color: #333;">${hazard.name}</h4>
-              <p style="margin: 4px 0; color: #666;">類型: ${hazardType.name}</p>
-              <p style="margin: 4px 0; color: #666;">等級: ${hazardLevel.name}</p>
-              <p style="margin: 4px 0; color: #666;">建築: ${hazard.building || '未指定'}</p>
+              <p style="margin: 4px 0; color: #666;">${hazardType.name}</p>
+              <p style="margin: 4px 0; color: #666;">${hazardLevel.name}</p>
+              <p style="margin: 4px 0; color: #666;">${hazard.building || '未指定'}</p>
               <p style="margin: 4px 0; color: #888; font-size: 0.9rem;">${hazard.description || ''}</p>
-              <p style="margin: 4px 0; color: #666;">影響範圍: ${hazardLevel.radarRadius}公尺</p>
+              <p style="margin: 4px 0; color: #666;">Radius: ${hazardLevel.radarRadius}m</p>
             </div>
           `;
 
@@ -339,27 +340,29 @@ export default function MapComponent({ hazards = [] }) {
   if (error) {
     return (
       <div className="map-error">
-        地圖載入失敗: {error}
+        Map loading error: {error}
       </div>
     );
   }
 
   return (
-    <div 
-      ref={mapRef} 
-      className="map-container"
-      style={{
-        width: '100%',
-        height: '100%',
-        minHeight: '100px',
-        minWidth: '300px'
-      }}
-    >
-      {!mapLoaded && (
-        <div className="map-loading">
-          載入地圖中...
-        </div>
-      )}
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div 
+        ref={mapRef} 
+        className="map-container"
+        style={{
+          width: '100%',
+          height: '100%',
+          minHeight: '100px',
+          minWidth: '300px'
+        }}
+      >
+        {!mapLoaded && (
+          <div className="map-loading">
+            Loading map...
+          </div>
+        )}
+      </div>
     </div>
   );
 } 
