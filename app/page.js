@@ -1,141 +1,170 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import styles from './page.module.css';
-import { hazardData, hazardTypes, hazardLevels, legendData, getHazardIcon, hasLeveledIcons, getTypeIcons } from '../data/mapData';
+import styles from '../styles/components/layout.module.css';
+import { legendData, hasLeveledIcons, getHazardIcon } from '../data/mapData';
+import { useTranslation } from '../contexts/LanguageContext';
+import { useMapState } from '../hooks/useMapState';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import HazardFilter from '../components/HazardFilter';
+import HazardList from '../components/HazardList';
 
+// 動態載入地圖組件
 const MapComponent = dynamic(() => import('../components/MapComponent'), {
-  ssr: false,
-  loading: () => <div className={styles.mapLoading}>Loading Map...</div>
+  ssr: false
 });
 
-export default function Home() {
-  const [selectedHazard, setSelectedHazard] = useState('all');
+// 圖例組件
+const Legend = ({ legendData, hasLeveledIcons, getHazardIcon, t }) => (
+  <div className="legend">
+    <h3>{t('legend.title')}</h3>
+    <div className="legendItems">
+      {legendData.hazardTypes.map((type) => (
+        <div key={type.key} className="legendItem">
+          {hasLeveledIcons(type.key) ? (
+            <div className="leveledIcons">
+              <span 
+                className="hazardIcon"
+                style={{ backgroundImage: `url(${getHazardIcon(type.key, 'high')})` }}
+                title={`- High Risk ${type.name}`}
+              />
+              <span 
+                className="hazardIcon"
+                style={{ backgroundImage: `url(${getHazardIcon(type.key, 'medium')})` }}
+                title={`- Medium Risk ${type.name}`}
+              />
+              <span 
+                className="hazardIcon"
+                style={{ backgroundImage: `url(${getHazardIcon(type.key, 'low')})` }}
+                title={`- Low Risk ${type.name}`}
+              />
+            </div>
+          ) : (
+            <span 
+              className="hazardIcon"
+              style={{ backgroundImage: `url(${type.icon})` }}
+            />
+          )}
+          <span>{t(`hazardTypes.${type.key}`)}</span>
+        </div>
+      ))}
+    </div>
+    <div className="legendLevels">
+      {legendData.hazardLevels.map((level) => (
+        <div key={level.key} className="legendLevel">
+          <div 
+            className={`levelDot ${level.key}`}
+            style={{ backgroundColor: level.color }}
+          />
+          <span>{t(`hazardLevels.${level.key}`)}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
-  const filteredHazards = selectedHazard === 'all' 
-    ? hazardData 
-    : hazardData.filter(hazard => hazard.type === selectedHazard);
+export default function Home() {
+  const { t, isLoading } = useTranslation();
+  
+  // 使用自定義 Hook 管理地圖狀態
+  const {
+    selectedHazard,
+    filteredHazards,
+    mapLoaded,
+    error,
+    isZooming,
+    hazardStats,
+    hasActiveFilters,
+    activeHazardCount,
+    handleHazardFilter,
+    handleMapLoad,
+    handleMapError,
+    handleZoomStart,
+    handleZoomEnd
+  } = useMapState();
+
+  // 使用 useMemo 優化圖例渲染
+  const legendComponent = useMemo(() => (
+    <Legend 
+      legendData={legendData} 
+      hasLeveledIcons={hasLeveledIcons} 
+      getHazardIcon={getHazardIcon} 
+      t={t} 
+    />
+  ), [t]);
+
+  // 處理危險項目點擊
+  const handleHazardClick = (hazard) => {
+    console.log('點擊危險項目:', hazard);
+    // 這裡可以添加地圖定位到該危險項目的邏輯
+  };
+
+  // 如果正在載入語言檔案，顯示簡潔的載入狀態
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <h1 className={styles.title}>NTUT 危險地圖</h1>
+            <LanguageSwitcher />
+          </div>
+        </header>
+        <div className={styles.mainContent}>
+          <div>
+            <div className="map-loading">載入中...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
       {/* 標題列 */}
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <h1 className={styles.title}>NTUT Hazzard Map</h1>
+          <h1 className={styles.title}>{t('header.title')}</h1>
+          <LanguageSwitcher />
         </div>
       </header>
 
       {/* 主要內容區域 */}
       <div className={styles.mainContent}>
         {/* 地圖區域 */}
-        <div className={styles.mapContainer}>
-          <MapComponent hazards={filteredHazards} />
+        <div>
+          {error ? (
+            <div className="map-error">
+              地圖載入錯誤: {error}
+            </div>
+          ) : (
+            <MapComponent 
+              hazards={filteredHazards}
+              onMapLoad={handleMapLoad}
+              onMapError={handleMapError}
+              onZoomStart={handleZoomStart}
+              onZoomEnd={handleZoomEnd}
+            />
+          )}
         </div>
 
         {/* 側邊 UI 面板 */}
         <div className={styles.sidebar}>
           {/* 危險類型篩選 */}
-          <div className={styles.filterSection}>
-            <h3>Danger Type Filter</h3>
-            <div className={styles.filterOptions}>
-              <button 
-                className={`${styles.filterBtn} ${selectedHazard === 'all' ? styles.active : ''}`}
-                onClick={() => setSelectedHazard('all')}
-              >
-                All Types
-              </button>
-              {Object.entries(hazardTypes).map(([key, value]) => (
-                <button 
-                  key={key}
-                  className={`${styles.filterBtn} ${selectedHazard === key ? styles.active : ''}`}
-                  onClick={() => setSelectedHazard(key)}
-                  style={{ borderLeftColor: value.color }}
-                >
-                  <span 
-                    className={styles.hazardIcon}
-                    style={{ backgroundImage: `url(${value.icon})` }}
-                  ></span>
-                  {value.name}
-                </button>
-              ))}
-            </div>
-          </div>
+          <HazardFilter 
+            selectedHazard={selectedHazard}
+            onHazardFilter={handleHazardFilter}
+            hazardStats={hazardStats}
+          />
 
           {/* 危險區域列表 */}
-          <div className={styles.hazardList}>
-            <h3>Dangerous Zone List</h3>
-            <div className={styles.hazardItems}>
-              {filteredHazards.map(hazard => (
-                <div key={hazard.id} className={styles.hazardItem}>
-                  <div className={styles.hazardInfo}>
-                    <span 
-                      className={styles.hazardIcon}
-                      style={{ backgroundImage: `url(${getHazardIcon(hazard.type, hazard.level)})` }}
-                    ></span>
-                    <div>
-                      <h4>{hazard.name}</h4>
-                      <p className={styles.hazardType}>{hazardTypes[hazard.type].name}</p>
-                      <p className={styles.hazardBuilding}>{hazard.building || 'No building specified'}</p>
-                    </div>
-                  </div>
-                  <div className={`${styles.hazardLevel} ${styles[hazard.level]}`}>
-                    {hazardLevels[hazard.level].displayText}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <HazardList 
+            hazards={filteredHazards}
+            onHazardClick={handleHazardClick}
+          />
 
           {/* 圖例 */}
-          <div className={styles.legend}>
-            <h3>Legend</h3>
-            <div className={styles.legendItems}>
-              {/* 動態顯示所有危險類型 */}
-              {legendData.hazardTypes.map((type) => (
-                <div key={type.key} className={styles.legendItem}>
-                  {hasLeveledIcons(type.key) ? (
-                    // 如果有等級化圖示，顯示所有等級
-                    <div className={styles.leveledIcons}>
-                      <span 
-                        className={styles.hazardIcon}
-                        style={{ backgroundImage: `url(${getHazardIcon(type.key, 'high')})` }}
-                        title={`- High Risk ${type.name}`}
-                      ></span>
-                      <span 
-                        className={styles.hazardIcon}
-                        style={{ backgroundImage: `url(${getHazardIcon(type.key, 'medium')})` }}
-                        title={`- Medium Risk ${type.name}`}
-                      ></span>
-                      <span 
-                        className={styles.hazardIcon}
-                        style={{ backgroundImage: `url(${getHazardIcon(type.key, 'low')})` }}
-                        title={`- Low Risk ${type.name}`}
-                      ></span>
-                    </div>
-                  ) : (
-                    // 如果沒有等級化圖示，顯示單一圖示
-                    <span 
-                      className={styles.hazardIcon}
-                      style={{ backgroundImage: `url(${type.icon})` }}
-                    ></span>
-                  )}
-                  <span>{type.name}</span>
-                </div>
-              ))}
-            </div>
-            <div className={styles.legendLevels}>
-              {legendData.hazardLevels.map((level) => (
-                <div key={level.key} className={styles.legendLevel}>
-                  <div 
-                    className={`${styles.levelDot} ${styles[level.key]}`}
-                    style={{ backgroundColor: level.color }}
-                  ></div>
-                  <span>{level.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          {legendComponent}
         </div>
       </div>
     </div>

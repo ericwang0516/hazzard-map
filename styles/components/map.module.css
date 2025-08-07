@@ -1,0 +1,354 @@
+/* 地圖容器 */
+.mapContainer {
+  width: 100%;
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px var(--shadow);
+  position: relative;
+  min-height: 600px;
+  height: 60vh;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* 地圖元素樣式 */
+.mapContainer :global(.map-container) {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  background: var(--surface);
+  position: relative;
+  border-radius: 20px;
+}
+
+.mapLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 2rem;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 20px;
+}
+
+.mapContainer :global(.map-loading) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 2rem;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 20px;
+}
+
+.mapContainer :global(.map-error) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 600px;
+  background: var(--surface);
+  color: var(--secondary);
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-radius: 20px;
+}
+
+/* 雷達動畫樣式 */
+.mapContainer :global(.hazard-marker) {
+  z-index: 1000 !important;
+  position: relative !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.mapContainer :global(.hazard-marker div) {
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+  /* 移除預設動畫，改為使用 JavaScript 動態添加 */
+}
+
+.mapContainer :global(.hazard-marker:hover div) {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  /* 移除 transform 和動畫變化，避免閃爍 */
+}
+
+.mapContainer :global(.leaflet-interactive) {
+  transition: none;
+}
+
+/* 雷達脈衝動畫 */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.01);
+    opacity: 0.98;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 動畫類別，用於 JavaScript 動態添加 */
+.mapContainer :global(.pulse-animation) {
+  animation: pulse 2s infinite !important;
+}
+
+/* 自定義危險圖標樣式 */
+.mapContainer :global(.hazard-marker-chemical-high),
+.mapContainer :global(.hazard-marker-chemical-medium),
+.mapContainer :global(.hazard-marker-chemical-low) {
+  filter: drop-shadow(0 2px 4px rgba(255, 68, 68, 0.3)) !important;
+  z-index: 1000 !important;
+}
+
+.mapContainer :global(.hazard-marker-electrical-high),
+.mapContainer :global(.hazard-marker-electrical-medium),
+.mapContainer :global(.hazard-marker-electrical-low) {
+  filter: drop-shadow(0 2px 4px rgba(255, 204, 0, 0.3)) !important;
+  z-index: 1000 !important;
+}
+
+.mapContainer :global(.hazard-marker-storage-high),
+.mapContainer :global(.hazard-marker-storage-medium),
+.mapContainer :global(.hazard-marker-storage-low) {
+  filter: drop-shadow(0 2px 4px rgba(255, 0, 102, 0.3)) !important;
+  z-index: 1000 !important;
+}
+
+/* 圖標懸停效果 */
+.mapContainer :global(.hazard-marker-chemical-high:hover),
+.mapContainer :global(.hazard-marker-chemical-medium:hover),
+.mapContainer :global(.hazard-marker-chemical-low:hover) {
+  filter: drop-shadow(0 4px 8px rgba(255, 68, 68, 0.5)) !important;
+  z-index: 1001 !important;
+  /* 移除 transform，避免與 pulse 動畫衝突 */
+}
+
+.mapContainer :global(.hazard-marker-electrical-high:hover),
+.mapContainer :global(.hazard-marker-electrical-medium:hover),
+.mapContainer :global(.hazard-marker-electrical-low:hover) {
+  filter: drop-shadow(0 4px 8px rgba(255, 204, 0, 0.5)) !important;
+  z-index: 1001 !important;
+  /* 移除 transform，避免與 pulse 動畫衝突 */
+}
+
+.mapContainer :global(.hazard-marker-storage-high:hover),
+.mapContainer :global(.hazard-marker-storage-medium:hover),
+.mapContainer :global(.hazard-marker-storage-low:hover) {
+  filter: drop-shadow(0 4px 8px rgba(255, 0, 102, 0.5)) !important;
+  z-index: 1001 !important;
+  /* 移除 transform，避免與 pulse 動畫衝突 */
+}
+
+/* 地圖彈出視窗樣式 */
+.mapContainer :global(.leaflet-popup-content-wrapper) {
+  background: var(--surface) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px var(--shadow) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.mapContainer :global(.leaflet-popup-content) {
+  color: var(--text-primary) !important;
+  font-family: var(--font-noto-sans), sans-serif !important;
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.mapContainer :global(.leaflet-popup-content h3) {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  margin: 0 0 8px 0 !important;
+  font-size: 1.1rem !important;
+}
+
+.mapContainer :global(.leaflet-popup-content h4) {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  margin: 0 0 8px 0 !important;
+  font-size: 1rem !important;
+}
+
+.mapContainer :global(.leaflet-popup-content p) {
+  color: var(--text-secondary) !important;
+  margin: 4px 0 !important;
+  font-size: 0.85rem !important;
+}
+
+.mapContainer :global(.leaflet-popup-tip) {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.mapContainer :global(.leaflet-popup-close-button) {
+  color: var(--text-secondary) !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  transition: color 0.2s ease, background-color 0.2s ease !important;
+}
+
+.mapContainer :global(.leaflet-popup-close-button:hover) {
+  color: var(--text-primary) !important;
+  background: var(--surface-light) !important;
+}
+
+/* 地圖控制項樣式 */
+.mapContainer :global(.leaflet-control-zoom) {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px var(--shadow);
+}
+
+.mapContainer :global(.leaflet-control-zoom a) {
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.mapContainer :global(.leaflet-control-zoom a:hover) {
+  background: var(--surface-light);
+  color: var(--text-primary);
+}
+
+.mapContainer :global(.leaflet-control-zoom a:last-child) {
+  border-bottom: none;
+}
+
+/* 地圖圖層控制樣式 */
+.mapContainer :global(.leaflet-control-layers) {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 4px 15px var(--shadow);
+}
+
+.mapContainer :global(.leaflet-control-layers-toggle) {
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.mapContainer :global(.leaflet-control-layers-toggle:hover) {
+  background: var(--surface-light);
+  color: var(--text-primary);
+}
+
+/* 地圖縮放控制樣式 */
+.mapContainer :global(.leaflet-control-attribution) {
+  background: rgba(10, 10, 10, 0.8);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.mapContainer :global(.leaflet-control-attribution a) {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.mapContainer :global(.leaflet-control-attribution a:hover) {
+  color: var(--secondary);
+}
+
+/* 聚合標記樣式 */
+.mapContainer :global(.cluster-marker) {
+  transition: all 0.3s ease !important;
+  z-index: 1000 !important;
+}
+
+.mapContainer :global(.cluster-marker:hover) {
+  transform: scale(1.1) !important;
+  z-index: 1001 !important;
+}
+
+/* 聚合彈出視窗樣式 */
+.mapContainer :global(.cluster-popup) {
+  font-family: var(--font-noto-sans), sans-serif !important;
+  max-width: 300px !important;
+}
+
+.mapContainer :global(.cluster-popup h3) {
+  color: var(--text-primary) !important;
+  margin: 0 0 8px 0 !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+}
+
+.mapContainer :global(.cluster-popup p) {
+  color: var(--text-secondary) !important;
+  margin: 0 0 8px 0 !important;
+}
+
+.mapContainer :global(.cluster-popup ul) {
+  margin: 4px 0 !important;
+  padding-left: 16px !important;
+  color: var(--text-secondary) !important;
+  font-size: 0.9rem !important;
+}
+
+.mapContainer :global(.cluster-popup li) {
+  margin-bottom: 2px !important;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .mapContainer {
+    height: 50vh;
+    min-height: 500px;
+    border-radius: 16px;
+  }
+  
+  /* 調整彈出視窗在手機版的樣式 */
+  .mapContainer :global(.leaflet-popup-content-wrapper) {
+    max-width: calc(100% - 40px) !important;
+    min-width: 200px !important;
+  }
+  
+  .mapContainer :global(.leaflet-popup-content) {
+    max-width: calc(100% - 60px) !important;
+    min-width: 180px !important;
+    font-size: 0.85rem !important;
+    padding: 8px !important;
+  }
+  
+  .mapContainer :global(.leaflet-popup-content h3) {
+    font-size: 1rem !important;
+    margin: 0 0 6px 0 !important;
+  }
+  
+  .mapContainer :global(.leaflet-popup-content h4) {
+    font-size: 0.9rem !important;
+    margin: 0 0 6px 0 !important;
+  }
+  
+  .mapContainer :global(.leaflet-popup-content p) {
+    font-size: 0.8rem !important;
+    margin: 3px 0 !important;
+  }
+} 

@@ -1,0 +1,38 @@
+{
+  "common": {
+    "title": "NTUT( 国立台北科技大学) ハザードマップ",
+    "description": "化学薬品に関する危険性と避難のためのNTUT ハザードマップ ",
+    "loading": "読み込み中...",
+    "all": "すべて",
+    "noBuildingSpecified": "建物が指定されていません"
+  },
+  "header": {
+    "title": "NTUT(国立台北科技大学)ハザードマップ"
+  },
+  "filters": {
+    "title": "危険性の種類",
+    "allTypes": "一覧"
+  },
+  "hazardList": {
+    "title": "危険エリアのリスト"
+  },
+  "legend": {
+    "title": "危険レベル"
+  },
+  "hazardTypes": {
+    "chemical": "化学薬品",
+    "mechanical": "機械",
+    "electrical": "電気",
+    "storage": "保管物"
+  },
+  "hazardLevels": {
+    "high": "危険",
+    "medium": "警戒",
+    "low": "注意"
+  },
+  "language": {
+    "zh-TW": "繁體中文",
+    "en": "English",
+    "ja": "日本語"
+  }
+}

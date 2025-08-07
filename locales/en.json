@@ -1,0 +1,38 @@
+{
+  "common": {
+    "title": "NTUT Hazard Map",
+    "description": "NTUT Hazard Map for chemical disaster and evacuation",
+    "loading": "Loading...",
+    "all": "All",
+    "noBuildingSpecified": "No building specified"
+  },
+  "header": {
+    "title": "NTUT Hazard Map"
+  },
+  "filters": {
+    "title": "Danger Type Filter",
+    "allTypes": "All Types"
+  },
+  "hazardList": {
+    "title": "Dangerous Zone List"
+  },
+  "legend": {
+    "title": "Legend"
+  },
+  "hazardTypes": {
+    "chemical": "Chemical",
+    "mechanical": "Mechanical",
+    "electrical": "Electrical",
+    "storage": "Storage"
+  },
+  "hazardLevels": {
+    "high": "High Risk",
+    "medium": "Medium Risk",
+    "low": "Low Risk"
+  },
+  "language": {
+    "zh-TW": "繁體中文",
+    "en": "English",
+    "ja": "日本語"
+  }
+} 

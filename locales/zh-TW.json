@@ -1,0 +1,38 @@
+{
+  "common": {
+    "title": "北科大化學災害與疏散地圖",
+    "description": "北科大化學災害與疏散地圖",
+    "loading": "載入中...",
+    "all": "全部",
+    "noBuildingSpecified": "未指定建築物"
+  },
+  "header": {
+    "title": "北科大化學災害與疏散地圖"
+  },
+  "filters": {
+    "title": "危險類型篩選",
+    "allTypes": "所有類型"
+  },
+  "hazardList": {
+    "title": "危險區域列表"
+  },
+  "legend": {
+    "title": "圖例"
+  },
+  "hazardTypes": {
+    "chemical": "化學品",
+    "mechanical": "機械設備",
+    "electrical": "電氣設備",
+    "storage": "儲存設施"
+  },
+  "hazardLevels": {
+    "high": "高風險",
+    "medium": "中風險", 
+    "low": "低風險"
+  },
+  "language": {
+    "zh-TW": "繁體中文",
+    "en": "English",
+    "ja": "日本語"
+  }
+} 

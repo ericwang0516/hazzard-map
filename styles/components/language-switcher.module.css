@@ -1,0 +1,142 @@
+/* 語言切換器容器 */
+.languageSwitcher {
+  position: relative;
+  display: inline-block;
+}
+
+/* 語言切換按鈕 */
+.languageButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-secondary);
+  border-radius: 8px;
+}
+
+.languageButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+/* 地球圖示 */
+.languageIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 語言文字 - 隱藏 */
+.languageText {
+  display: none;
+}
+
+/* 下拉箭頭 */
+.dropdownArrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+  color: var(--text-secondary);
+  margin-left: 2px;
+}
+
+.dropdownArrow.rotated {
+  transform: rotate(180deg);
+}
+
+/* 下拉選單 */
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px var(--shadow);
+  min-width: 140px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 語言選項 */
+.languageOption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: left;
+  position: relative;
+}
+
+.languageOption:hover {
+  background: var(--surface-light);
+  color: var(--text-primary);
+}
+
+.languageOption.active {
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* 語言名稱 */
+.languageName {
+  flex: 1;
+  white-space: nowrap;
+}
+
+/* 勾選標記 */
+.checkmark {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* 動畫效果 */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .languageButton {
+    padding: 0.4rem;
+  }
+  
+  .languageIcon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .dropdownMenu {
+    min-width: 120px;
+  }
+  
+  .languageOption {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+} 

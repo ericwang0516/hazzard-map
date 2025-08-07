@@ -1,0 +1,398 @@
+/* 篩選區域 */
+.filterSection {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 20px 60px var(--shadow);
+  border: 1px solid var(--border);
+  max-height: 400px;
+  overflow-y: auto;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.1s;
+}
+
+.filterSection h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+
+
+.filterOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-left: 4px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.filterBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.filterBtn:hover {
+  color: var(--text-primary);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px var(--shadow);
+}
+
+.filterBtn:hover::before {
+  opacity: 0.1;
+}
+
+.filterBtn.active {
+  background: var(--surface-light);
+  border-color: var(--primary);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: 0 10px 30px var(--shadow);
+}
+
+.hazardIcon {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
+  filter: brightness(1.2) contrast(1.1);
+}
+
+.leveledIcons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.leveledIcons .hazardIcon {
+  width: 26px;
+  height: 26px;
+}
+
+/* 危險區域列表 */
+.hazardList {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 20px 60px var(--shadow);
+  border: 1px solid var(--border);
+  max-height: 400px;
+  overflow-y: auto;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
+}
+
+.hazardList h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+
+
+.hazardItems {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hazardItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem;
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hazardItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hazardItem:hover {
+  background: var(--surface-light);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px var(--shadow);
+  border-color: var(--primary);
+}
+
+.hazardItem:hover::before {
+  opacity: 1;
+}
+
+.hazardInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.hazardInfo h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hazardType {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.hazardBuilding {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hazardLevel {
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: white;
+  min-width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 15px var(--shadow);
+}
+
+.hazardLevel.high {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.hazardLevel.medium {
+  background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
+}
+
+.hazardLevel.low {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+}
+
+/* 圖例 */
+.legend {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 20px 60px var(--shadow);
+  border: 1px solid var(--border);
+  max-height: 400px;
+  overflow-y: auto;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.3s;
+}
+
+.legend h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  position: relative;
+}
+
+.legendItems {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: var(--surface);
+}
+
+.legendItem:hover {
+  color: var(--text-primary);
+  background: var(--surface-light);
+}
+
+.legendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  box-shadow: 0 2px 8px var(--shadow);
+  flex-shrink: 0;
+}
+
+.legendLevels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.legendLevel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: var(--surface);
+}
+
+.legendLevel:hover {
+  color: var(--text-primary);
+  background: var(--surface-light);
+}
+
+.levelDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  box-shadow: 0 2px 8px var(--shadow);
+  flex-shrink: 0;
+}
+
+.levelDot.high {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.levelDot.medium {
+  background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
+}
+
+.levelDot.low {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+}
+
+/* 響應式設計 */
+@media (max-width: 1200px) {
+  .filterSection,
+  .hazardList,
+  .legend {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 1000px) {
+  .filterSection,
+  .hazardList,
+  .legend {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .filterSection,
+  .hazardList,
+  .legend {
+    border-radius: 16px;
+    padding: 1.2rem;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .filterSection h3,
+  .hazardList h3,
+  .legend h3 {
+    font-size: 1.2rem;
+  }
+  
+  .filterBtn {
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .hazardItem {
+    padding: 1rem;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .hazardInfo {
+    min-width: 0;
+    flex: 1;
+  }
+  
+  .hazardInfo h4 {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .hazardType,
+  .hazardBuilding {
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+} 

@@ -206,7 +206,7 @@ export const hazardLevels = {
     size: 16,
     description: 'Medium Risk Zone',
     displayText: 'MEDIUM',
-    radarRadius: 25 // 雷達動畫範圍（公尺）
+    radarRadius: 35 // 雷達動畫範圍（公尺）
   },
   low: {
     name: 'Low Risk',
@@ -214,7 +214,7 @@ export const hazardLevels = {
     size: 12,
     description: 'Low Risk Zone',
     displayText: 'LOW',
-    radarRadius: 20 // 雷達動畫範圍（公尺）
+    radarRadius: 30 // 雷達動畫範圍（公尺）
   }
 };
 
@@ -235,8 +235,8 @@ export const legendData = {
 
 // 地圖中心點和縮放等級
 export const mapConfig = {
-  center: [25.0430, 121.5348], // 地圖中心點 - 調整為建築物群的中心
+  center: [ 25.04313415950537, 121.53473568046063 ], // 地圖中心點 - 調整為建築物群的中心
   zoom: 17, // 縮放等級
-  minZoom: 15,
+  minZoom: 16,
   maxZoom: 19
 }; 

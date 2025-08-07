@@ -1,0 +1,152 @@
+/* 全域容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
+/* 標題列 */
+.header {
+  background: rgb(247, 247, 247);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: sticky;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  top: 0;
+  z-index: 1000;
+  flex-shrink: 0;
+  height: 60px;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.title {
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.05em;
+  color: #000000;
+  position: relative;
+  user-select: none;
+}
+
+/* 主要內容區域 */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem;
+  gap: 1.5rem;
+  min-height: 0;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
+/* 側邊欄 */
+.sidebar {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 2rem;
+  flex-shrink: 0;
+}
+
+/* 動畫效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 1200px) {
+  .mainContent {
+    padding: 2rem;
+    gap: 1rem;
+  }
+  
+  .sidebar {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 1000px) {
+  .mainContent {
+    width: 100%;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+  
+  .sidebar {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    width: 100%;
+    padding: 1rem;
+    gap: 1rem;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+  }
+  
+  .headerContent {
+    padding: 0 1rem;
+    margin: 0;
+  }
+  .header{
+    height: 70px;
+  }
+  
+  .title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  
+  /* 確保側邊欄在手機版不會超出螢幕 */
+  .sidebar {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+} 
