@@ -43,7 +43,7 @@ const createClickHandler = (hazard, onHazardClick) => {
   };
 };
 
-const ClusterMarkers = ({ hazards, onHazardClick }) => {
+const ClusterMarkers = ({ hazards, onHazardClick, onRouteRequest }) => {
   const map = useMap();
   const [clusters, setClusters] = useState([]);
   const { t } = useTranslation();
@@ -224,10 +224,7 @@ const ClusterMarkers = ({ hazards, onHazardClick }) => {
                   }}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#218838'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = '#28a745'}
-                  onClick={() => {
-                    console.log('路線按鈕點擊:', hazard);
-                    // 這裡可以添加路線規劃邏輯
-                  }}
+                  onClick={() => onRouteRequest?.(hazard)}
                 >
                   {t('popup.route')}
                 </button>

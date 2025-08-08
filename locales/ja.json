@@ -81,5 +81,11 @@
   "popup": {
     "route": "ルート",
     "close": "閉じる"
+  },
+  "evacuation": {
+    "points": {
+      "E1": "避難地点 A",
+      "E2": "避難地点 B"
+    }
   }
 }

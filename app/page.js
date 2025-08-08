@@ -11,12 +11,10 @@ import Navigation from '../components/Navigation';
 import HazardFilter from '../components/HazardFilter';
 import HazardList from '../components/HazardList';
 
-// 動態載入地圖組件
 const MapComponent = dynamic(() => import('../components/MapComponent'), {
   ssr: false
 });
 
-// 圖例組件
 const Legend = ({ legendData, hasLeveledIcons, getHazardIcon, t }) => (
   <div className="legend">
     <h3>{t('legend.title')}</h3>
@@ -28,17 +26,17 @@ const Legend = ({ legendData, hasLeveledIcons, getHazardIcon, t }) => (
               <span 
                 className="hazardIcon"
                 style={{ backgroundImage: `url(${getHazardIcon(type.key, 'high')})` }}
-                title={`- High Risk ${type.name}`}
+                title={`High Risk ${type.name}`}
               />
               <span 
                 className="hazardIcon"
                 style={{ backgroundImage: `url(${getHazardIcon(type.key, 'medium')})` }}
-                title={`- Medium Risk ${type.name}`}
+                title={`Medium Risk ${type.name}`}
               />
               <span 
                 className="hazardIcon"
                 style={{ backgroundImage: `url(${getHazardIcon(type.key, 'low')})` }}
-                title={`- Low Risk ${type.name}`}
+                title={`Low Risk ${type.name}`}
               />
             </div>
           ) : (
@@ -107,13 +105,13 @@ export default function Home() {
       <div className={styles.container}>
         <header className={styles.header}>
           <div className={styles.headerContent}>
-            <h1 className={styles.title}>NTUT 危險地圖</h1>
+            <h1 className={styles.title}>NTUT Hazzard Map Beta</h1>
             <LanguageSwitcher />
           </div>
         </header>
         <div className={styles.mainContent}>
           <div>
-            <div className="map-loading">載入中...</div>
+            <div className="map-loading">Loading...</div>
           </div>
         </div>
       </div>
@@ -139,7 +137,7 @@ export default function Home() {
         <div>
           {error ? (
             <div className="map-error">
-              地圖載入錯誤: {error}
+              Map loading error: {error}
             </div>
           ) : (
             <MapComponent 

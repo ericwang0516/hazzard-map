@@ -81,5 +81,11 @@
   "popup": {
     "route": "路線",
     "close": "關閉"
+  },
+  "evacuation": {
+    "points": {
+      "E1": "疏散點 A",
+      "E2": "疏散點 B"
+    }
   }
 } 

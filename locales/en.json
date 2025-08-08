@@ -81,5 +81,11 @@
   "popup": {
     "route": "Route",
     "close": "Close"
+  },
+  "evacuation": {
+    "points": {
+      "E1": "Evacuation Point A (Field)",
+      "E2": "Evacuation Point B (Park)"
+    }
   }
 } 

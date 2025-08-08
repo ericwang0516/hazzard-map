@@ -240,3 +240,27 @@ export const mapConfig = {
   minZoom: 16,
   maxZoom: 19
 }; 
+
+
+export const evacuationPoints = [
+  {
+    id: 'E1',
+    name: 'Evacuation Point A',
+    lat: 25.0423342991760, // 25.04233429917609, 121.53747381406157
+    lng: 121.53747381406157,
+    icon: 'eva_a'
+  },
+  {
+    id: 'E2',
+    name: 'Evacuation Point B',
+    lat: 25.04437959038416, //25.04437959038416, 121.53351092679495
+    lng: 121.53351092679495,
+    icon: 'eva_b'
+  }
+];
+
+// 疏散點圖示對應
+export const evacuationIconPaths = {
+  eva_a: '/icons/eva_a.png',
+  eva_b: '/icons/eva_b.png'
+};

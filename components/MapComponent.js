@@ -4,7 +4,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, Polygon, Circle, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { getHazardIcon, hazardTypes, hazardLevels, campusBounds, mapConfig } from '../data/mapData';
+import { getHazardIcon, hazardTypes, hazardLevels, campusBounds, mapConfig, evacuationPoints, evacuationIconPaths, buildings } from '../data/mapData';
+import { useTranslation } from '../contexts/LanguageContext';
 import { clusterHazards } from '../utils/clusterUtils';
 import '../utils/deprecationFix'; // 導入棄用警告修復
 import mapStyles from '../styles/components/map.module.css';
@@ -51,9 +52,279 @@ const MapComponent = ({
   onZoomEnd,
   onHazardClick 
 }) => {
+  const { t } = useTranslation();
   const mapRef = useRef(null);
   const radarCirclesRef = useRef(new Map()); // 儲存雷達圓圈的參考
   const [isLoading, setIsLoading] = useState(true); // 載入狀態
+  const routeLayerRef = useRef(null); // 路徑圖層
+  const evacuationMarkersRef = useRef(new Map()); // 疏散點標記索引（id -> marker）
+
+  // 將校園邊界轉為簡單的經緯度陣列
+  const campusPolygon = campusBounds.coordinates.map(([lat, lng]) => ({ lat, lng }));
+
+  // 工具：判斷點是否在多邊形內（射線法）
+  const isPointInPolygon = (point, polygon) => {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].lng, yi = polygon[i].lat;
+      const xj = polygon[j].lng, yj = polygon[j].lat;
+      const intersect = ((yi > point.lat) !== (yj > point.lat)) &&
+        (point.lng < (xj - xi) * (point.lat - yi) / (yj - yi + 1e-12) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  };
+
+  // 工具：計算兩點之間的近似距離（公尺）
+  const approximateDistanceMeters = (a, b) => {
+    const toRad = (d) => d * Math.PI / 180;
+    const R = 6371000;
+    const dLat = toRad(b.lat - a.lat);
+    const dLng = toRad(b.lng - a.lng);
+    const lat1 = toRad(a.lat);
+    const lat2 = toRad(b.lat);
+    const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  };
+
+  // 在校園內以粗網格 + A* 規劃避開建物點緩衝區的路線
+  const computeCampusRouteAvoidingBuildings = (from, to, buildingPoints) => {
+    try {
+      // 取邊界包圍盒
+      let minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
+      campusPolygon.forEach(p => { minLat = Math.min(minLat, p.lat); maxLat = Math.max(maxLat, p.lat); minLng = Math.min(minLng, p.lng); maxLng = Math.max(maxLng, p.lng); });
+      // 為避免邊界緊貼，擴張一點點
+      const latMargin = (maxLat - minLat) * 0.05;
+      const lngMargin = (maxLng - minLng) * 0.05;
+      minLat -= latMargin; maxLat += latMargin; minLng -= lngMargin; maxLng += lngMargin;
+
+      const rows = 50; // 網格解析度（可調）
+      const cols = 50;
+      const latStep = (maxLat - minLat) / (rows - 1);
+      const lngStep = (maxLng - minLng) / (cols - 1);
+
+      // 建物緩衝半徑（公尺）
+      const buildingBufferM = 25;
+
+      // 建立阻擋表
+      const blocked = new Array(rows);
+      for (let r = 0; r < rows; r++) {
+        blocked[r] = new Array(cols).fill(false);
+        for (let c = 0; c < cols; c++) {
+          const lat = minLat + r * latStep;
+          const lng = minLng + c * lngStep;
+          const pt = { lat, lng };
+          // 僅允許在多邊形內的格點
+          if (!isPointInPolygon(pt, campusPolygon)) {
+            blocked[r][c] = true;
+            continue;
+          }
+          // 距離任一建物點過近則阻擋
+          for (const b of buildingPoints) {
+            const d = approximateDistanceMeters(pt, { lat: b.lat, lng: b.lng });
+            if (d <= buildingBufferM) {
+              blocked[r][c] = true;
+              break;
+            }
+          }
+        }
+      }
+
+      const toIndex = (lat, lng) => {
+        const r = Math.max(0, Math.min(rows - 1, Math.round((lat - minLat) / latStep)));
+        const c = Math.max(0, Math.min(cols - 1, Math.round((lng - minLng) / lngStep)));
+        return { r, c };
+      };
+
+      const toLatLng = (r, c) => L.latLng(minLat + r * latStep, minLng + c * lngStep);
+
+      const start = toIndex(from.lat, from.lng);
+      const goal = toIndex(to.lat, to.lng);
+
+      // 若起點或終點落在阻擋格，嘗試找到附近可用格
+      const deltas = [ [0,0],[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1] ];
+      const findNearestFree = (idx) => {
+        if (!blocked[idx.r][idx.c]) return idx;
+        const radiusMax = 5;
+        for (let rad = 1; rad <= radiusMax; rad++) {
+          for (let dr = -rad; dr <= rad; dr++) {
+            for (let dc = -rad; dc <= rad; dc++) {
+              const rr = idx.r + dr, cc = idx.c + dc;
+              if (rr >= 0 && rr < rows && cc >= 0 && cc < cols && !blocked[rr][cc]) {
+                return { r: rr, c: cc };
+              }
+            }
+          }
+        }
+        return null;
+      };
+
+      const s = findNearestFree(start);
+      const g = findNearestFree(goal);
+      if (!s || !g) return null;
+
+      // A* 搜尋
+      const key = (r, c) => `${r},${c}`;
+      const open = new Map();
+      const cameFrom = new Map();
+      const gScore = new Map();
+      const fScore = new Map();
+
+      const h = (r, c) => {
+        const a = toLatLng(r, c), b = toLatLng(g.r, g.c);
+        return approximateDistanceMeters({ lat: a.lat, lng: a.lng }, { lat: b.lat, lng: b.lng });
+      };
+
+      const startKey = key(s.r, s.c);
+      gScore.set(startKey, 0);
+      fScore.set(startKey, h(s.r, s.c));
+      open.set(startKey, { r: s.r, c: s.c, f: fScore.get(startKey) });
+
+      const neighbors = (r, c) => {
+        const results = [];
+        for (const [dr, dc] of deltas) {
+          const rr = r + dr, cc = c + dc;
+          if (rr < 0 || rr >= rows || cc < 0 || cc >= cols) continue;
+          if (blocked[rr][cc]) continue;
+          results.push({ r: rr, c: cc });
+        }
+        return results;
+      };
+
+      while (open.size > 0) {
+        // 取 f 最小的節點
+        let currentKey = null, current = null, bestF = Infinity;
+        for (const [k, v] of open.entries()) {
+          const f = fScore.get(k) ?? Infinity;
+          if (f < bestF) { bestF = f; currentKey = k; current = v; }
+        }
+        if (!current) break;
+
+        if (current.r === g.r && current.c === g.c) {
+          // 回溯路徑
+          const path = [];
+          let ck = currentKey;
+          while (ck) {
+            const [rr, cc] = ck.split(',').map(Number);
+            path.push(toLatLng(rr, cc));
+            ck = cameFrom.get(ck);
+          }
+          path.reverse();
+          // 簡單降採樣，避免太多點
+          const simplified = [];
+          for (let i = 0; i < path.length; i += 2) simplified.push(path[i]);
+          if (simplified[simplified.length - 1] !== path[path.length - 1]) simplified.push(path[path.length - 1]);
+          return simplified;
+        }
+
+        open.delete(currentKey);
+        for (const nb of neighbors(current.r, current.c)) {
+          const nk = key(nb.r, nb.c);
+          const tentative = (gScore.get(currentKey) ?? Infinity) + approximateDistanceMeters(
+            { lat: toLatLng(current.r, current.c).lat, lng: toLatLng(current.r, current.c).lng },
+            { lat: toLatLng(nb.r, nb.c).lat, lng: toLatLng(nb.r, nb.c).lng }
+          );
+          if (tentative < (gScore.get(nk) ?? Infinity)) {
+            cameFrom.set(nk, currentKey);
+            gScore.set(nk, tentative);
+            fScore.set(nk, tentative + h(nb.r, nb.c));
+            if (!open.has(nk)) open.set(nk, { r: nb.r, c: nb.c, f: fScore.get(nk) });
+          }
+        }
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  // 計算最近的疏散點
+  const getNearestEvacuationPoint = useCallback((fromLat, fromLng) => {
+    const from = L.latLng(fromLat, fromLng);
+    let nearest = null;
+    let minDist = Infinity;
+    evacuationPoints.forEach((pt) => {
+      const dist = from.distanceTo(L.latLng(pt.lat, pt.lng));
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = { ...pt, distance: dist };
+      }
+    });
+    return nearest;
+  }, []);
+
+  // 取得 OSRM 步行路線（若失敗將回退為直線）
+  const fetchOsrmRoute = useCallback(async (from, to) => {
+    try {
+      const url = `https://router.project-osrm.org/route/v1/foot/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson`;
+      const response = await fetch(url);
+      if (!response.ok) return null;
+      const data = await response.json();
+      if (!data || !data.routes || !data.routes[0] || !data.routes[0].geometry) return null;
+      const coords = data.routes[0].geometry.coordinates; // [lng, lat]
+      return coords.map(([lng, lat]) => L.latLng(lat, lng));
+    } catch (e) {
+      return null;
+    }
+  }, []);
+
+  // 繪製路徑（優先使用 OSRM，失敗則用直線），並縮放至範圍
+  const drawRoute = useCallback(async (fromLat, fromLng, toLat, toLng, distanceM) => {
+    if (!mapRef.current) return;
+    const map = mapRef.current;
+
+    if (!routeLayerRef.current) {
+      routeLayerRef.current = L.layerGroup().addTo(map);
+    }
+    routeLayerRef.current.clearLayers();
+
+    const from = L.latLng(fromLat, fromLng);
+    const to = L.latLng(toLat, toLng);
+
+    // 先嘗試在校園內以格網 A* 規劃避開建物的路線
+    let latLngs = computeCampusRouteAvoidingBuildings(from, to, buildings);
+    
+    // 若沒有找到可行路徑，再嘗試 OSRM 步行路線
+    if (!latLngs || latLngs.length < 2) {
+      latLngs = await fetchOsrmRoute(from, to);
+    }
+    if (!latLngs || latLngs.length < 2) {
+      latLngs = [from, to];
+    }
+
+    const polyline = L.polyline(latLngs, {
+      color: '#007bff',
+      weight: 4,
+      opacity: 0.9,
+      dashArray: '6,6'
+    }).addTo(routeLayerRef.current);
+
+    // 在終點加上提示距離的 tooltip
+    L.marker(to, { opacity: 0 })
+      .addTo(routeLayerRef.current)
+      .bindTooltip(`距離最近疏散點：約 ${(distanceM/1).toFixed(0)} m`, { permanent: false, direction: 'top' })
+      .openTooltip();
+
+    try {
+      const bounds = L.latLngBounds(latLngs).pad(0.2);
+      map.fitBounds(bounds, { animate: true });
+    } catch {}
+  }, [fetchOsrmRoute]);
+
+  // 提供給標記彈窗「路線」按鈕的回呼
+  const handleRouteRequest = useCallback((hazard) => {
+    const nearest = getNearestEvacuationPoint(hazard.lat, hazard.lng);
+    if (!nearest) return;
+    // 非同步繪製路線（自動選擇 OSRM 或回退）
+    drawRoute(hazard.lat, hazard.lng, nearest.lat, nearest.lng, nearest.distance);
+
+    // 嘗試開啟最近疏散點彈窗
+    const marker = evacuationMarkersRef.current.get(nearest.id);
+    if (marker && marker.openPopup) {
+      try { marker.openPopup(); } catch {}
+    }
+  }, [drawRoute, getNearestEvacuationPoint]);
 
   // 組件初始載入時的處理
   useEffect(() => {
@@ -461,10 +732,54 @@ const MapComponent = ({
       />
       
       {/* 聚合標記 */}
-      <ClusterMarkers hazards={hazards} onHazardClick={onHazardClick} />
+      <ClusterMarkers hazards={hazards} onHazardClick={onHazardClick} onRouteRequest={handleRouteRequest} />
+
+      {/* 疏散點標記與路徑層控制 */}
+      <EvacuationAndRouteLayer routeLayerRef={routeLayerRef} evacuationMarkersRef={evacuationMarkersRef} />
       </MapContainer>
     </div>
   );
 };
 
 export default MapComponent; 
+
+// 內部輔助元件：渲染疏散點標記並初始化路徑圖層
+function EvacuationAndRouteLayer({ routeLayerRef, evacuationMarkersRef }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+
+    // 建立或重設路徑圖層
+    if (!routeLayerRef.current) {
+      routeLayerRef.current = L.layerGroup().addTo(map);
+    } else {
+      routeLayerRef.current.clearLayers();
+    }
+
+    // 清除舊疏散標記
+    evacuationMarkersRef.current.forEach(m => {
+      try { if (map.hasLayer(m)) map.removeLayer(m); } catch {}
+    });
+    evacuationMarkersRef.current.clear();
+
+    // 加入疏散點標記（使用自訂圖示）
+    evacuationPoints.forEach(pt => {
+      const iconUrl = pt.icon && evacuationIconPaths[pt.icon]
+        ? evacuationIconPaths[pt.icon]
+        : 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png';
+      const marker = L.marker([pt.lat, pt.lng], {
+        icon: L.icon({
+          iconUrl,
+          iconSize: [30, 30],
+          iconAnchor: [15, 15]
+        })
+      }).bindPopup(`<strong>${pt.name || t(`evacuation.points.${pt.id}`)}</strong>`);
+      marker.addTo(map);
+      evacuationMarkersRef.current.set(pt.id, marker);
+    });
+
+  }, [map, routeLayerRef, evacuationMarkersRef]);
+
+  return null;
+};

@@ -27,6 +27,10 @@ export default function RootLayout({ children }) {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        {/* 統一行動瀏覽器工具列色彩，避免灰階觀感 */}
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="msapplication-navbutton-color" content="#ffffff" />
+        {/* iOS 僅接受 default/black/black-translucent，維持 default 以避免系統調色 */}
       </head>
       <body className={notoSans.variable}>
         <LanguageProvider>

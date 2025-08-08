@@ -64,11 +64,9 @@ a {
   text-decoration: none;
 }
 
-/* 修復棄用警告的樣式 */
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* 強制使用淺色配色，避免行動裝置自動套用深色導致灰階感 */
+html {
+  color-scheme: light;
 }
 
 /* 修復 Leaflet 圖標問題 */
@@ -405,14 +403,6 @@ a {
 
 /* 響應式設計 */
 @media (max-width: 768px) {
-  .hazard-marker div {
-    /* 移除 transform，避免與 pulse 動畫衝突 */
-  }
-  
-  .hazard-marker:hover div {
-    /* 移除 transform，避免與 pulse 動畫衝突 */
-  }
-  
   .hazard-popup {
     min-width: 150px;
     max-width: calc(100vw - 40px) !important;
