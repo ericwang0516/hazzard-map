@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, Polygon, Circle, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -63,7 +63,7 @@ const MapComponent = ({
   const campusPolygon = campusBounds.coordinates.map(([lat, lng]) => ({ lat, lng }));
 
   // 工具：判斷點是否在多邊形內（射線法）
-  const isPointInPolygon = (point, polygon) => {
+  const isPointInPolygon = useCallback((point, polygon) => {
     let inside = false;
     for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
       const xi = polygon[i].lng, yi = polygon[i].lat;
@@ -73,10 +73,22 @@ const MapComponent = ({
       if (intersect) inside = !inside;
     }
     return inside;
-  };
+  }, []);
+
+  // 假的使用者位置（固定於地圖中心）
+  const fakeUserPos = useMemo(() => ({ lat: mapConfig.center[0], lng: mapConfig.center[1] }), []);
+
+  // 假定位點圖示
+  const userIcon = useMemo(() => L.divIcon({
+    className: 'fake-user-location',
+    iconSize: [16, 16],
+    iconAnchor: [8, 8]
+  }), []);
+
+  
 
   // 工具：計算兩點之間的近似距離（公尺）
-  const approximateDistanceMeters = (a, b) => {
+  const approximateDistanceMeters = useCallback((a, b) => {
     const toRad = (d) => d * Math.PI / 180;
     const R = 6371000;
     const dLat = toRad(b.lat - a.lat);
@@ -85,10 +97,10 @@ const MapComponent = ({
     const lat2 = toRad(b.lat);
     const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
     return 2 * R * Math.asin(Math.sqrt(h));
-  };
+  }, []);
 
   // 在校園內以粗網格 + A* 規劃避開建物點緩衝區的路線
-  const computeCampusRouteAvoidingBuildings = (from, to, buildingPoints) => {
+  const computeCampusRouteAvoidingBuildings = useCallback((from, to, buildingPoints) => {
     try {
       // 取邊界包圍盒
       let minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
@@ -115,13 +127,13 @@ const MapComponent = ({
           const lng = minLng + c * lngStep;
           const pt = { lat, lng };
           // 僅允許在多邊形內的格點
-          if (!isPointInPolygon(pt, campusPolygon)) {
+           if (!isPointInPolygon(pt, campusPolygon)) {
             blocked[r][c] = true;
             continue;
           }
           // 距離任一建物點過近則阻擋
           for (const b of buildingPoints) {
-            const d = approximateDistanceMeters(pt, { lat: b.lat, lng: b.lng });
+             const d = approximateDistanceMeters(pt, { lat: b.lat, lng: b.lng });
             if (d <= buildingBufferM) {
               blocked[r][c] = true;
               break;
@@ -220,7 +232,7 @@ const MapComponent = ({
         open.delete(currentKey);
         for (const nb of neighbors(current.r, current.c)) {
           const nk = key(nb.r, nb.c);
-          const tentative = (gScore.get(currentKey) ?? Infinity) + approximateDistanceMeters(
+           const tentative = (gScore.get(currentKey) ?? Infinity) + approximateDistanceMeters(
             { lat: toLatLng(current.r, current.c).lat, lng: toLatLng(current.r, current.c).lng },
             { lat: toLatLng(nb.r, nb.c).lat, lng: toLatLng(nb.r, nb.c).lng }
           );
@@ -237,7 +249,7 @@ const MapComponent = ({
     } catch {
       return null;
     }
-  };
+  }, [campusPolygon, isPointInPolygon, approximateDistanceMeters]);
 
   // 計算最近的疏散點
   const getNearestEvacuationPoint = useCallback((fromLat, fromLng) => {
@@ -310,7 +322,7 @@ const MapComponent = ({
       const bounds = L.latLngBounds(latLngs).pad(0.2);
       map.fitBounds(bounds, { animate: true });
     } catch {}
-  }, [fetchOsrmRoute]);
+  }, [fetchOsrmRoute, computeCampusRouteAvoidingBuildings]);
 
   // 提供給標記彈窗「路線」按鈕的回呼
   const handleRouteRequest = useCallback((hazard) => {
@@ -433,6 +445,9 @@ const MapComponent = ({
   useEffect(() => {
     console.log('雷達動畫 useEffect 觸發，危險項目數量:', hazards.length);
     
+    // 在 effect 開頭快照目前的雷達圓圈 Map 供清理使用，避免閉包讀取變動的 ref
+    const cleanupRadarMap = radarCirclesRef.current;
+
     const createRadarAnimations = () => {
       if (!mapRef.current) {
         console.log('地圖實例不存在，等待地圖創建...');
@@ -440,10 +455,11 @@ const MapComponent = ({
       }
 
       const map = mapRef.current;
+      const localRadarMap = radarCirclesRef.current;
       console.log('開始創建雷達動畫，過濾後的危險項目:', hazards.map(h => ({ id: h.id, name: h.name, lat: h.lat, lng: h.lng })));
       
       // 清理舊的雷達圓圈
-      radarCirclesRef.current.forEach((item) => {
+      localRadarMap.forEach((item) => {
         try {
           if (item.animationId) {
             cancelAnimationFrame(item.animationId);
@@ -455,7 +471,7 @@ const MapComponent = ({
           console.warn('清理雷達圓圈時發生錯誤:', error);
         }
       });
-      radarCirclesRef.current.clear();
+      localRadarMap.clear();
       
       // 確保地圖投影系統穩定
       if (!map.getCenter || !map.getZoom) {
@@ -537,7 +553,7 @@ const MapComponent = ({
           animateRadar();
           
           // 儲存動畫 ID 以便清理
-          radarCirclesRef.current.set(hazard.id, { circle: radarCircle, animationId });
+          localRadarMap.set(hazard.id, { circle: radarCircle, animationId });
         } catch (error) {
           console.warn(`為危險項目 ${hazard.id} 創建雷達動畫時發生錯誤:`, error);
         }
@@ -563,7 +579,8 @@ const MapComponent = ({
         // 清理雷達圓圈和動畫
         if (mapRef.current) {
           const map = mapRef.current;
-          radarCirclesRef.current.forEach((item) => {
+          const storedRadarMap = cleanupRadarMap;
+          storedRadarMap.forEach((item) => {
             try {
               if (item.animationId) {
                 cancelAnimationFrame(item.animationId);
@@ -575,7 +592,7 @@ const MapComponent = ({
               console.warn('清理雷達圓圈時發生錯誤:', error);
             }
           });
-          radarCirclesRef.current.clear();
+          storedRadarMap.clear();
         }
       };
     }
@@ -584,7 +601,8 @@ const MapComponent = ({
       // 清理雷達圓圈和動畫
       if (mapRef.current) {
         const map = mapRef.current;
-        radarCirclesRef.current.forEach((item) => {
+        const storedRadarMap = cleanupRadarMap;
+        storedRadarMap.forEach((item) => {
           try {
             if (item.animationId) {
               cancelAnimationFrame(item.animationId);
@@ -596,7 +614,7 @@ const MapComponent = ({
             console.warn('清理雷達圓圈時發生錯誤:', error);
           }
         });
-        radarCirclesRef.current.clear();
+        storedRadarMap.clear();
       }
     };
   }, [hazards]);
@@ -730,6 +748,19 @@ const MapComponent = ({
           fillOpacity: campusBounds.style.fillOpacity
         }}
       />
+      {/* 模擬使用者位置（隨機生成於校園內） */}
+      {fakeUserPos && (
+        <>
+          <Circle
+            center={[fakeUserPos.lat, fakeUserPos.lng]}
+            radius={25}
+            pathOptions={{ color: '#2563eb', fillColor: '#60a5fa', fillOpacity: 0.2, weight: 1 }}
+          />
+          <Marker position={[fakeUserPos.lat, fakeUserPos.lng]} icon={userIcon}>
+            <Popup>目前位置（模擬）</Popup>
+          </Marker>
+        </>
+      )}
       
       {/* 聚合標記 */}
       <ClusterMarkers hazards={hazards} onHazardClick={onHazardClick} onRouteRequest={handleRouteRequest} />

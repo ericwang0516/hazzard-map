@@ -51,7 +51,7 @@ const ClusterMarker = ({ cluster, onClusterClick }) => {
         marker.on('click', () => {
           onClusterClick(cluster);
         });
-      }
+      };
 
       // 添加彈出視窗
       const popupContent = `

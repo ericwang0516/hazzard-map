@@ -343,6 +343,16 @@
     margin: 3px 0 !important;
   }
 
+  /* 模擬使用者位置樣式 */
+  .mapContainer :global(.fake-user-location) {
+    width: 16px;
+    height: 16px;
+    background: #2563eb;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+  }
+
   /* 手機版：彈出卡片內的按鈕區塊，避免溢出與擠壓 */
   .mapContainer :global(.hazard-popup .hazard-actions) {
     display: flex !important;

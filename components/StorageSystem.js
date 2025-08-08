@@ -159,4 +159,4 @@ export default function StorageSystem() {
       </div>
     </div>
   );
-} 
+};
